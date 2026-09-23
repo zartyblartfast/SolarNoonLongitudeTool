@@ -4,6 +4,7 @@ import { calculateSolarNoonLocation } from './domain/solarNoonLocation';
 import type { SolarEphemerisAtTime, SolarNoonObservation } from './domain/observation';
 import { LatitudeDiagram } from './diagrams/LatitudeDiagram';
 import { LongitudeDiagram } from './diagrams/LongitudeDiagram';
+import { FixedEphemerisProvider } from './ephemeris/FixedEphemerisProvider';
 
 const phases = [
   {
@@ -52,13 +53,16 @@ const kinglakeEphemeris: SolarEphemerisAtTime = {
   source: 'locked reference fixture'
 };
 
+const fixtureEphemerisProvider = new FixedEphemerisProvider(kinglakeEphemeris);
+
 export default function App() {
   const [observation, setObservation] = useState<SolarNoonObservation>(kinglakeObservation);
   const [dateInput, setDateInput] = useState('2026-09-22');
   const [timeInput, setTimeInput] = useState('02:12');
   const [altitudeInput, setAltitudeInput] = useState(String(kinglakeObservation.solarAltitudeDeg));
   const [directionInput, setDirectionInput] = useState<SolarNoonObservation['meridianDirection']>(kinglakeObservation.meridianDirection);
-  const result = calculateSolarNoonLocation(observation, kinglakeEphemeris);
+  const ephemeris = fixtureEphemerisProvider.at(observation.timestampUtc);
+  const result = calculateSolarNoonLocation(observation, ephemeris);
 
   function handleObservationSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
