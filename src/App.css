@@ -198,6 +198,31 @@ p:last-child {
   font-size: 0.875rem;
 }
 
+.form-message {
+  margin: 8px 0 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--colour-border);
+  font-size: 0.925rem;
+}
+
+.form-message-error {
+  grid-column: 1 / -1;
+  color: #b42318;
+  border-color: #f3b3ae;
+  background: #fff0ee;
+}
+
+.form-message-warning {
+  color: #9a5700;
+  border-color: #f2ce93;
+  background: #fff8ed;
+}
+
+.result-warnings {
+  margin-top: 12px;
+}
+
 .direction-fieldset {
   display: grid;
   gap: 10px;

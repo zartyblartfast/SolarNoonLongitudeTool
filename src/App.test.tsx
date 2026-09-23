@@ -91,4 +91,27 @@ describe('App progress page', () => {
 
     expect(screen.getByText(/38\.15° N, 145\.22° E/i)).toBeInTheDocument();
   });
+
+  it('shows an altitude validation error and preserves the previous result', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    const altitudeInput = screen.getByRole('spinbutton', { name: /solar altitude at noon/i });
+    await user.clear(altitudeInput);
+    await user.type(altitudeInput, '95');
+    await user.click(screen.getByRole('button', { name: /calculate location/i }));
+
+    expect(screen.getByText(/solar altitude must be between 0° and 90°/i)).toBeInTheDocument();
+    expect(screen.getByText(/37\.45° S, 145\.22° E/i)).toBeInTheDocument();
+  });
+
+  it('shows geometry warnings returned by the calculation', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(screen.getByRole('radio', { name: /directly overhead/i }));
+    await user.click(screen.getByRole('button', { name: /calculate location/i }));
+
+    expect(screen.getByText(/not close enough to 90° for an overhead transit/i)).toBeInTheDocument();
+  });
 });

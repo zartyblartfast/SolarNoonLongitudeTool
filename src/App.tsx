@@ -53,15 +53,23 @@ export default function App() {
   const [timeInput, setTimeInput] = useState('02:12');
   const [altitudeInput, setAltitudeInput] = useState(String(kinglakeObservation.solarAltitudeDeg));
   const [directionInput, setDirectionInput] = useState<SolarNoonObservation['meridianDirection']>(kinglakeObservation.meridianDirection);
+  const [formError, setFormError] = useState<string | null>(null);
   const ephemeris = ephemerisProvider.at(observation.timestampUtc);
   const result = calculateSolarNoonLocation(observation, ephemeris);
 
   function handleObservationSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const nextAltitude = Number(altitudeInput);
+    if (!Number.isFinite(nextAltitude) || nextAltitude < 0 || nextAltitude > 90) {
+      setFormError('Solar altitude must be between 0° and 90°.');
+      return;
+    }
+
+    setFormError(null);
     setObservation({
       ...observation,
       timestampUtc: `${dateInput}T${timeInput}:00Z`,
-      solarAltitudeDeg: Number(altitudeInput),
+      solarAltitudeDeg: nextAltitude,
       meridianDirection: directionInput
     });
   }
@@ -120,7 +128,7 @@ export default function App() {
           This first editable slice uses the locked Kinglake ephemeris fixture while proving that the
           result and diagrams respond to observation input changes.
         </p>
-        <form className="observation-form" onSubmit={handleObservationSubmit}>
+        <form className="observation-form" noValidate onSubmit={handleObservationSubmit}>
           <label htmlFor="utc-date-input">Date of solar noon (UTC)</label>
           <input
             id="utc-date-input"
@@ -153,6 +161,7 @@ export default function App() {
             <span aria-hidden="true">°</span>
           </div>
           <p className="field-helper">The corrected angle of the Sun’s centre above the true horizon.</p>
+          {formError ? <p className="form-message form-message-error">{formError}</p> : null}
 
           <fieldset className="direction-fieldset">
             <legend>At solar noon, the Sun was:</legend>
@@ -204,6 +213,15 @@ export default function App() {
           <span>Equation of time: {result.equationOfTimeMinutes.toFixed(2)} minutes</span>
           <span>Solar data: {ephemeris.source}</span>
         </div>
+        {result.warnings.length > 0 ? (
+          <div className="result-warnings" aria-label="Calculation warnings">
+            {result.warnings.map((warning) => (
+              <p key={warning.code} className={`form-message form-message-${warning.severity}`}>
+                {warning.message}
+              </p>
+            ))}
+          </div>
+        ) : null}
       </section>
 
       <section className="panel" aria-labelledby="latitude-diagram-section-title">
