@@ -1,4 +1,6 @@
 import './App.css';
+import { calculateSolarNoonLocation } from './domain/solarNoonLocation';
+import type { SolarEphemerisAtTime, SolarNoonObservation } from './domain/observation';
 
 const phases = [
   {
@@ -10,7 +12,7 @@ const phases = [
   {
     id: 'Phase 2',
     title: 'Solar-noon calculation engine',
-    status: 'Planned',
+    status: 'Completed',
     detail: 'Implement the pure domain model, validation, trace output, and the Kinglake reference case.'
   },
   {
@@ -32,6 +34,22 @@ const phases = [
     detail: 'Connect the form, results, diagrams, accessibility checks, browser tests, and responsive review.'
   }
 ];
+
+const kinglakeObservation: SolarNoonObservation = {
+  timestampUtc: '2026-09-22T02:12:00Z',
+  solarAltitudeDeg: 52.2,
+  meridianDirection: 'north'
+};
+
+const kinglakeEphemeris: SolarEphemerisAtTime = {
+  declinationDeg: 0.3557,
+  subsolarLongitudeDeg: 145.215,
+  equationOfTimeMinutes: 7.14,
+  nominalAngularAccuracyDeg: 0.0167,
+  source: 'locked reference fixture'
+};
+
+const kinglakeResult = calculateSolarNoonLocation(kinglakeObservation, kinglakeEphemeris);
 
 export default function App() {
   return (
@@ -82,6 +100,21 @@ export default function App() {
         </div>
       </section>
 
+      <section className="panel" aria-labelledby="kinglake-title">
+        <h2 id="kinglake-title">Kinglake reference calculation</h2>
+        <p>
+          The first domain slice reproduces the locked 22 September 2026 worked example using injected
+          ephemeris values. This proves the latitude branch, zenith-distance calculation, longitude
+          equation, and trace structure before the production ephemeris adapter is added.
+        </p>
+        <div className="reference-result" aria-label="Kinglake worked example result">
+          <strong>{formatCoordinatePair(kinglakeResult.latitudeDeg, kinglakeResult.longitudeDeg)}</strong>
+          <span>Zenith distance: {formatDegrees(kinglakeResult.zenithDistanceDeg)}</span>
+          <span>Solar declination: {formatSignedDegrees(kinglakeResult.declinationDeg)}</span>
+          <span>Equation of time: {kinglakeResult.equationOfTimeMinutes.toFixed(2)} minutes</span>
+        </div>
+      </section>
+
       <section className="panel" aria-labelledby="progress-title">
         <h2 id="progress-title">Implementation progress</h2>
         <ol className="phase-list">
@@ -99,4 +132,21 @@ export default function App() {
       </section>
     </main>
   );
+}
+
+function formatCoordinatePair(latitudeDeg: number, longitudeDeg: number): string {
+  return `${formatHemisphere(latitudeDeg, 'N', 'S')}, ${formatHemisphere(longitudeDeg, 'E', 'W')}`;
+}
+
+function formatHemisphere(valueDeg: number, positiveHemisphere: string, negativeHemisphere: string): string {
+  const hemisphere = valueDeg >= 0 ? positiveHemisphere : negativeHemisphere;
+  return `${Math.abs(valueDeg).toFixed(2)}° ${hemisphere}`;
+}
+
+function formatDegrees(valueDeg: number): string {
+  return `${valueDeg.toFixed(1)}°`;
+}
+
+function formatSignedDegrees(valueDeg: number): string {
+  return `${valueDeg >= 0 ? '+' : '−'}${Math.abs(valueDeg).toFixed(4)}°`;
 }

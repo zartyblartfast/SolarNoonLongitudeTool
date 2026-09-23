@@ -31,7 +31,15 @@ describe('App progress page', () => {
     render(<App />);
 
     expect(screen.getByText(/phase 1/i)).toBeInTheDocument();
-    expect(screen.getByText(/completed/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/completed/i)).toHaveLength(2);
     expect(screen.getByText(/phase 4/i)).toBeInTheDocument();
+  });
+
+  it('shows the Kinglake reference calculation from the domain engine', () => {
+    render(<App />);
+
+    expect(screen.getByRole('heading', { name: /kinglake reference calculation/i })).toBeInTheDocument();
+    expect(screen.getByText(/37\.44° S, 145\.22° E/i)).toBeInTheDocument();
+    expect(screen.getByText(/zenith distance: 37\.8°/i)).toBeInTheDocument();
   });
 });

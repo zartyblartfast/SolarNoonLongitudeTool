@@ -119,6 +119,28 @@ p:last-child {
   color: var(--colour-text-muted);
 }
 
+.reference-result {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid var(--colour-border);
+  border-radius: 12px;
+  background: var(--colour-primary-subtle);
+}
+
+.reference-result strong,
+.reference-result span {
+  display: block;
+}
+
+.reference-result strong {
+  color: var(--colour-primary);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  grid-column: 1 / -1;
+}
+
 .globe-water {
   fill: var(--colour-earth-water);
   stroke: var(--colour-primary);
@@ -185,7 +207,8 @@ p:last-child {
 
 @media (max-width: 899px) {
   .split,
-  .phase-list {
+  .phase-list,
+  .reference-result {
     grid-template-columns: 1fr;
   }
 }
