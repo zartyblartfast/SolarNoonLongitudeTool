@@ -568,6 +568,18 @@ p:last-child {
   stroke-width: 2;
 }
 
+.earth-context-land {
+  fill: #8fcf9b;
+  stroke: none;
+}
+
+.earth-context-land-outline {
+  fill: none;
+  stroke: #2f7f57;
+  stroke-width: 1.1;
+  stroke-linejoin: round;
+}
+
 .globe-graticule,
 .earth-context-graticule {
   fill: none;

@@ -42,4 +42,16 @@ describe('buildEarthContextGlobeGeometry', () => {
     expect(geometry.points.observer.label).toBe('Observer estimate');
     expect(geometry.points.subsolar.label).toBe('Subsolar point');
   });
+
+  it('projects land shapes for recognisable continent outlines', () => {
+    const geometry = buildEarthContextGlobeGeometry({
+      observerLatitudeDeg: -37.4451,
+      observerLongitudeDeg: 145.2185,
+      subsolarLatitudeDeg: 0.3549,
+      subsolarLongitudeDeg: 145.2185
+    });
+
+    expect(geometry.landPath).toMatch(/^M/);
+    expect(geometry.landPath.length).toBeGreaterThan(500);
+  });
 });

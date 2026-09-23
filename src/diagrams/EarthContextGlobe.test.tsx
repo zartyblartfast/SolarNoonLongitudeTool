@@ -14,6 +14,8 @@ describe('EarthContextGlobe', () => {
 
     expect(screen.getByRole('img', { name: /earth context globe/i })).toBeInTheDocument();
     expect(screen.getByTestId('earth-context-outline')).toBeInTheDocument();
+    expect(screen.getByTestId('earth-context-land')).toBeInTheDocument();
+    expect(screen.getByTestId('earth-context-land-outline')).toBeInTheDocument();
     expect(screen.getByTestId('earth-context-graticule')).toBeInTheDocument();
     expect(screen.getByTestId('earth-context-observer')).toBeInTheDocument();
     expect(screen.getByTestId('earth-context-subsolar')).toBeInTheDocument();

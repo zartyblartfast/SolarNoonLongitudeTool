@@ -30,8 +30,8 @@ const phases = [
   {
     id: 'Phase 4',
     title: 'Earth-like context globe',
-    status: 'Planned',
-    detail: 'Add a lightweight Earth-like SVG globe showing the observer estimate and subsolar point.'
+    status: 'Completed',
+    detail: 'Add a lightweight Earth-like SVG globe with continent outlines, the observer estimate, and the subsolar point.'
   },
   {
     id: 'Phase 5',
@@ -387,11 +387,11 @@ export default function App() {
       <section className="support-grid" aria-label="Supporting information">
         <section className="panel compact-panel" aria-labelledby="earth-context-title">
           <div>
-            <p className="eyebrow">Future context layer</p>
+            <p className="eyebrow">Earth context layer</p>
             <h2 id="earth-context-title">Orthographic Earth context</h2>
             <p>
-              The Earth-like globe will be a supporting context diagram. It will show the estimated
-              observer location and subsolar point, but it will not replace the schematic diagrams.
+              The Earth-like globe is a supporting context diagram with continent outlines, the estimated
+              observer location, and subsolar point, but it does not replace the schematic diagrams.
             </p>
           </div>
           <EarthContextGlobe

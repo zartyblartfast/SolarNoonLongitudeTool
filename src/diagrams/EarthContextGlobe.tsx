@@ -36,6 +36,8 @@ export function EarthContextGlobe({
           calculated solar-noon observation.
         </desc>
         <path data-testid="earth-context-outline" d={geometry.outlinePath} className="earth-context-outline" />
+        <path data-testid="earth-context-land" d={geometry.landPath} className="earth-context-land" />
+        <path data-testid="earth-context-land-outline" d={geometry.landPath} className="earth-context-land-outline" />
         <path data-testid="earth-context-graticule" d={geometry.graticulePath} className="earth-context-graticule" />
         {geometry.points.observer.visible ? (
           <circle

@@ -1,4 +1,8 @@
 import { geoGraticule10, geoOrthographic, geoPath, type GeoProjection } from 'd3-geo';
+import type { FeatureCollection, Geometry } from 'geojson';
+import { feature } from 'topojson-client';
+import type { GeometryObject, Topology } from 'topojson-specification';
+import land110m from 'world-atlas/land-110m.json';
 
 export interface EarthContextGlobeInput {
   observerLatitudeDeg: number;
@@ -23,6 +27,7 @@ export interface EarthContextGlobeGeometry {
   centerLatitudeDeg: number;
   centerLongitudeDeg: number;
   outlinePath: string;
+  landPath: string;
   graticulePath: string;
   points: {
     observer: GlobePoint;
@@ -33,6 +38,8 @@ export interface EarthContextGlobeGeometry {
 const WIDTH = 280;
 const HEIGHT = 280;
 const RADIUS = 112;
+const landTopology = land110m as unknown as Topology<{ land: GeometryObject }>;
+const landFeatureCollection = feature(landTopology, landTopology.objects.land) as FeatureCollection<Geometry>;
 
 export function buildEarthContextGlobeGeometry(input: EarthContextGlobeInput): EarthContextGlobeGeometry {
   const centerLatitudeDeg = (input.observerLatitudeDeg + input.subsolarLatitudeDeg) / 2;
@@ -44,6 +51,7 @@ export function buildEarthContextGlobeGeometry(input: EarthContextGlobeInput): E
     .clipAngle(90);
   const path = geoPath(projection);
   const outlinePath = path({ type: 'Sphere' }) ?? '';
+  const landPath = path(landFeatureCollection) ?? '';
   const graticulePath = path(geoGraticule10()) ?? '';
 
   return {
@@ -53,6 +61,7 @@ export function buildEarthContextGlobeGeometry(input: EarthContextGlobeInput): E
     centerLatitudeDeg,
     centerLongitudeDeg,
     outlinePath,
+    landPath,
     graticulePath,
     points: {
       observer: projectPoint(projection, input.observerLongitudeDeg, input.observerLatitudeDeg, 'Observer estimate'),

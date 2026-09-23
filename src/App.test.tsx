@@ -26,10 +26,10 @@ describe('App progress page', () => {
       screen.getByRole('heading', { name: /orthographic earth context/i })
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/supporting context diagram/i)
+      screen.getByText(/supporting context diagram with continent outlines/i)
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/not replace the schematic diagrams/i)
+      screen.getByText(/does not replace the schematic diagrams/i)
     ).toBeInTheDocument();
     expect(screen.getByRole('img', { name: /earth context globe/i })).toBeInTheDocument();
     expect(screen.getByTestId('earth-context-observer')).toBeInTheDocument();
@@ -40,7 +40,7 @@ describe('App progress page', () => {
     render(<App />);
 
     expect(screen.getByText(/phase 1/i)).toBeInTheDocument();
-    expect(screen.getAllByText(/completed/i)).toHaveLength(2);
+    expect(screen.getAllByText(/completed/i)).toHaveLength(3);
     expect(screen.getByText(/phase 4/i)).toBeInTheDocument();
   });
 
