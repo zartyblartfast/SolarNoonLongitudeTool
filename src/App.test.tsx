@@ -40,8 +40,9 @@ describe('App progress page', () => {
     render(<App />);
 
     expect(screen.getByRole('heading', { name: /kinglake reference calculation/i })).toBeInTheDocument();
-    expect(screen.getByText(/37\.44° S, 145\.22° E/i)).toBeInTheDocument();
+    expect(screen.getByText(/37\.45° S, 145\.22° E/i)).toBeInTheDocument();
     expect(screen.getByText(/zenith distance: 37\.8°/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/astronomy engine/i).length).toBeGreaterThan(0);
   });
 
   it('shows the first schematic latitude diagram slice', () => {
@@ -67,7 +68,7 @@ describe('App progress page', () => {
     await user.type(altitudeInput, '50');
     await user.click(screen.getByRole('button', { name: /calculate location/i }));
 
-    expect(screen.getByText(/39\.64° S, 145\.22° E/i)).toBeInTheDocument();
+    expect(screen.getByText(/39\.65° S, 145\.22° E/i)).toBeInTheDocument();
     expect(screen.getAllByText(/zenith distance: 40\.0°/i).length).toBeGreaterThan(0);
   });
 
@@ -88,6 +89,6 @@ describe('App progress page', () => {
     await user.click(screen.getByRole('radio', { name: /due south/i }));
     await user.click(screen.getByRole('button', { name: /calculate location/i }));
 
-    expect(screen.getByText(/38\.16° N, 145\.22° E/i)).toBeInTheDocument();
+    expect(screen.getByText(/38\.15° N, 145\.22° E/i)).toBeInTheDocument();
   });
 });

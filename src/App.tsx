@@ -1,10 +1,10 @@
 import './App.css';
 import { useState, type FormEvent } from 'react';
 import { calculateSolarNoonLocation } from './domain/solarNoonLocation';
-import type { SolarEphemerisAtTime, SolarNoonObservation } from './domain/observation';
+import type { SolarNoonObservation } from './domain/observation';
 import { LatitudeDiagram } from './diagrams/LatitudeDiagram';
 import { LongitudeDiagram } from './diagrams/LongitudeDiagram';
-import { FixedEphemerisProvider } from './ephemeris/FixedEphemerisProvider';
+import { AstronomyEngineProvider } from './ephemeris/AstronomyEngineProvider';
 
 const phases = [
   {
@@ -45,15 +45,7 @@ const kinglakeObservation: SolarNoonObservation = {
   meridianDirection: 'north'
 };
 
-const kinglakeEphemeris: SolarEphemerisAtTime = {
-  declinationDeg: 0.3557,
-  subsolarLongitudeDeg: 145.215,
-  equationOfTimeMinutes: 7.14,
-  nominalAngularAccuracyDeg: 0.0167,
-  source: 'locked reference fixture'
-};
-
-const fixtureEphemerisProvider = new FixedEphemerisProvider(kinglakeEphemeris);
+const ephemerisProvider = new AstronomyEngineProvider();
 
 export default function App() {
   const [observation, setObservation] = useState<SolarNoonObservation>(kinglakeObservation);
@@ -61,7 +53,7 @@ export default function App() {
   const [timeInput, setTimeInput] = useState('02:12');
   const [altitudeInput, setAltitudeInput] = useState(String(kinglakeObservation.solarAltitudeDeg));
   const [directionInput, setDirectionInput] = useState<SolarNoonObservation['meridianDirection']>(kinglakeObservation.meridianDirection);
-  const ephemeris = fixtureEphemerisProvider.at(observation.timestampUtc);
+  const ephemeris = ephemerisProvider.at(observation.timestampUtc);
   const result = calculateSolarNoonLocation(observation, ephemeris);
 
   function handleObservationSubmit(event: FormEvent<HTMLFormElement>) {
@@ -202,15 +194,15 @@ export default function App() {
       <section className="panel" aria-labelledby="kinglake-title">
         <h2 id="kinglake-title">Kinglake reference calculation</h2>
         <p>
-          The first domain slice reproduces the locked 22 September 2026 worked example using injected
-          ephemeris values. This proves the latitude branch, zenith-distance calculation, longitude
-          equation, and trace structure before the production ephemeris adapter is added.
+          The current calculation uses the Astronomy Engine provider for the Sun’s declination,
+          subsolar longitude, and equation of time, then applies the solar-noon sight-reduction model.
         </p>
         <div className="reference-result" aria-label="Kinglake worked example result">
           <strong>{formatCoordinatePair(result.latitudeDeg, result.longitudeDeg)}</strong>
           <span>Zenith distance: {formatDegrees(result.zenithDistanceDeg)}</span>
           <span>Solar declination: {formatSignedDegrees(result.declinationDeg)}</span>
           <span>Equation of time: {result.equationOfTimeMinutes.toFixed(2)} minutes</span>
+          <span>Solar data: {ephemeris.source}</span>
         </div>
       </section>
 
