@@ -130,6 +130,12 @@ function buildTrace(
       ? `φ = ${formatSigned(ephemeris.declinationDeg)}° + ${formatNumber(zenithDistanceDeg)}°`
       : `φ = ${formatSigned(ephemeris.declinationDeg)}°`;
 
+  const latitudeEvaluatedExpression = observation.meridianDirection === 'north'
+    ? `φ = ${formatSigned(ephemeris.declinationDeg)}° - ${formatNumber(zenithDistanceDeg)}° = ${formatSigned(latitudeDeg)}°`
+    : observation.meridianDirection === 'south'
+      ? `φ = ${formatSigned(ephemeris.declinationDeg)}° + ${formatNumber(zenithDistanceDeg)}° = ${formatSigned(latitudeDeg)}°`
+      : `φ = ${formatSigned(ephemeris.declinationDeg)}° = ${formatSigned(latitudeDeg)}°`;
+
   return [
     {
       id: 'solar-declination',
@@ -137,6 +143,7 @@ function buildTrace(
       expression: 'δ from ephemeris',
       substitution: `δ = ${formatSigned(ephemeris.declinationDeg)}°`,
       result: `${formatSigned(ephemeris.declinationDeg)}°`,
+      evaluatedExpression: `δ = ${formatSigned(ephemeris.declinationDeg)}°`,
       glossaryTerms: ['solar declination', 'subsolar point']
     },
     {
@@ -145,6 +152,7 @@ function buildTrace(
       expression: 'z = 90° - h',
       substitution: `z = 90° - ${formatNumber(observation.solarAltitudeDeg)}°`,
       result: `z = ${formatNumber(zenithDistanceDeg)}°`,
+      evaluatedExpression: `z = 90° - ${formatNumber(observation.solarAltitudeDeg)}° = ${formatNumber(zenithDistanceDeg)}°`,
       glossaryTerms: ['solar altitude', 'zenith distance']
     },
     {
@@ -153,6 +161,7 @@ function buildTrace(
       expression: latitudeExpression,
       substitution: latitudeSubstitution,
       result: `φ = ${formatSigned(latitudeDeg)}°`,
+      evaluatedExpression: latitudeEvaluatedExpression,
       glossaryTerms: ['latitude', 'meridian']
     },
     {
@@ -161,6 +170,7 @@ function buildTrace(
       expression: 'E from ephemeris',
       substitution: `E = ${formatSigned(ephemeris.equationOfTimeMinutes)} minutes`,
       result: `${formatSigned(ephemeris.equationOfTimeMinutes)} minutes`,
+      evaluatedExpression: `E = ${formatSigned(ephemeris.equationOfTimeMinutes)} minutes`,
       glossaryTerms: ['equation of time']
     },
     {
@@ -169,6 +179,7 @@ function buildTrace(
       expression: 'λ = (720 - U - E) / 4',
       substitution: `λ = (720 - ${formatNumber(utcMinutes)} - ${formatNumber(ephemeris.equationOfTimeMinutes)}) / 4`,
       result: `λ = ${formatSigned(longitudeFromEquationOfTimeDeg)}°`,
+      evaluatedExpression: `λ = (720 - ${formatNumber(utcMinutes)} - ${formatNumber(ephemeris.equationOfTimeMinutes)}) / 4 = ${formatSigned(longitudeFromEquationOfTimeDeg)}°`,
       glossaryTerms: ['longitude', 'local solar noon']
     }
   ];

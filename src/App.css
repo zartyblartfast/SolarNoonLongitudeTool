@@ -416,6 +416,18 @@ p:last-child {
   min-height: 2.2em;
 }
 
+.trace-equation {
+  margin: 0 0 10px;
+  padding: 9px 10px;
+  border-radius: 12px;
+  background: var(--colour-surface);
+  color: var(--colour-text);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
 .trace-list dl {
   display: grid;
   gap: 8px;

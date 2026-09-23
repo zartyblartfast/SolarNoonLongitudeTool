@@ -280,6 +280,7 @@ export default function App() {
           {result.trace.map((step) => (
             <li key={step.id}>
               <h3>{step.label}</h3>
+              <p className="trace-equation">{step.evaluatedExpression}</p>
               <dl>
                 <div>
                   <dt>Formula</dt>

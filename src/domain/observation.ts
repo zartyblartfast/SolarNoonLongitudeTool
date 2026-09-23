@@ -32,6 +32,7 @@ export interface TraceStep {
   expression: string;
   substitution: string;
   result: string;
+  evaluatedExpression: string;
   glossaryTerms: string[];
 }
 

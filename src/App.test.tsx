@@ -154,6 +154,14 @@ describe('App progress page', () => {
     expect(screen.getByText(/λ = \(720 - U - E\) \/ 4/i)).toBeInTheDocument();
   });
 
+  it('shows evaluated trace equations that connect formulas to numeric results', () => {
+    render(<App />);
+
+    expect(screen.getByText(/z = 90° - 52\.2° = 37\.8°/i)).toBeInTheDocument();
+    expect(screen.getByText(/φ = \+0\.3549° - 37\.8° = -37\.4451°/i)).toBeInTheDocument();
+    expect(screen.getByText(/λ = \(720 - 132 - 7\.1261\) \/ 4 = \+145\.2185°/i)).toBeInTheDocument();
+  });
+
   it('switches the coordinate display between decimal and DMS formats', async () => {
     const user = userEvent.setup();
     render(<App />);
