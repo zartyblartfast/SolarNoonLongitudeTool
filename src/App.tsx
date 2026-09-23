@@ -47,12 +47,15 @@ const kinglakeObservation: SolarNoonObservation = {
 
 const ephemerisProvider = new AstronomyEngineProvider();
 
+type CoordinateFormat = 'decimal' | 'dms';
+
 export default function App() {
   const [observation, setObservation] = useState<SolarNoonObservation>(kinglakeObservation);
   const [dateInput, setDateInput] = useState('2026-09-22');
   const [timeInput, setTimeInput] = useState('02:12');
   const [altitudeInput, setAltitudeInput] = useState(String(kinglakeObservation.solarAltitudeDeg));
   const [directionInput, setDirectionInput] = useState<SolarNoonObservation['meridianDirection']>(kinglakeObservation.meridianDirection);
+  const [coordinateFormat, setCoordinateFormat] = useState<CoordinateFormat>('decimal');
   const [formError, setFormError] = useState<string | null>(null);
   const ephemeris = ephemerisProvider.at(observation.timestampUtc);
   const result = calculateSolarNoonLocation(observation, ephemeris);
@@ -190,8 +193,29 @@ export default function App() {
             <p className="stale-result-message">Inputs changed — recalculate to update the result.</p>
           ) : null}
           <div className="coordinate-display" aria-label="Current coordinate estimate">
-            {formatCoordinatePair(result.latitudeDeg, result.longitudeDeg)}
+            {formatCoordinatePair(result.latitudeDeg, result.longitudeDeg, coordinateFormat)}
           </div>
+          <fieldset className="coordinate-format-fieldset">
+            <legend>Coordinate format</legend>
+            <label>
+              <input
+                type="radio"
+                name="coordinate-format"
+                checked={coordinateFormat === 'decimal'}
+                onChange={() => setCoordinateFormat('decimal')}
+              />
+              Decimal degrees
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="coordinate-format"
+                checked={coordinateFormat === 'dms'}
+                onChange={() => setCoordinateFormat('dms')}
+              />
+              Degrees minutes seconds
+            </label>
+          </fieldset>
           <dl className="result-metrics">
             <div>
               <dt>Zenith distance</dt>
@@ -334,13 +358,38 @@ export default function App() {
   );
 }
 
-function formatCoordinatePair(latitudeDeg: number, longitudeDeg: number): string {
-  return `${formatHemisphere(latitudeDeg, 'N', 'S')}, ${formatHemisphere(longitudeDeg, 'E', 'W')}`;
+function formatCoordinatePair(latitudeDeg: number, longitudeDeg: number, format: CoordinateFormat = 'decimal'): string {
+  if (format === 'dms') {
+    return `${formatDms(latitudeDeg, 'N', 'S')}, ${formatDms(longitudeDeg, 'E', 'W')}`;
+  }
+
+  return `${formatDecimalHemisphere(latitudeDeg, 'N', 'S')}, ${formatDecimalHemisphere(longitudeDeg, 'E', 'W')}`;
 }
 
-function formatHemisphere(valueDeg: number, positiveHemisphere: string, negativeHemisphere: string): string {
+function formatDecimalHemisphere(valueDeg: number, positiveHemisphere: string, negativeHemisphere: string): string {
   const hemisphere = valueDeg >= 0 ? positiveHemisphere : negativeHemisphere;
   return `${Math.abs(valueDeg).toFixed(2)}° ${hemisphere}`;
+}
+
+function formatDms(valueDeg: number, positiveHemisphere: string, negativeHemisphere: string): string {
+  const hemisphere = valueDeg >= 0 ? positiveHemisphere : negativeHemisphere;
+  const absolute = Math.abs(valueDeg);
+  let degrees = Math.floor(absolute);
+  const minuteFloat = (absolute - degrees) * 60;
+  let minutes = Math.floor(minuteFloat);
+  let seconds = Math.round((minuteFloat - minutes) * 60);
+
+  if (seconds === 60) {
+    seconds = 0;
+    minutes += 1;
+  }
+
+  if (minutes === 60) {
+    minutes = 0;
+    degrees += 1;
+  }
+
+  return `${degrees}° ${String(minutes).padStart(2, '0')}′ ${String(seconds).padStart(2, '0')}″ ${hemisphere}`;
 }
 
 function formatDegrees(valueDeg: number): string {

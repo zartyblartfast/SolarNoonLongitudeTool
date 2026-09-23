@@ -145,4 +145,19 @@ describe('App progress page', () => {
     expect(screen.getAllByText(/z = 90° - h/i).length).toBeGreaterThan(0);
     expect(screen.getByText(/λ = \(720 - U - E\) \/ 4/i)).toBeInTheDocument();
   });
+
+  it('switches the coordinate display between decimal and DMS formats', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    expect(screen.getByText(/37\.45° S, 145\.22° E/i)).toBeInTheDocument();
+
+    await user.click(screen.getByRole('radio', { name: /degrees minutes seconds/i }));
+
+    expect(screen.getByText(/37° 26′ 42″ S, 145° 13′ 07″ E/i)).toBeInTheDocument();
+
+    await user.click(screen.getByRole('radio', { name: /decimal degrees/i }));
+
+    expect(screen.getByText(/37\.45° S, 145\.22° E/i)).toBeInTheDocument();
+  });
 });

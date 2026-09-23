@@ -297,6 +297,32 @@ p:last-child {
   font-weight: 700;
 }
 
+.coordinate-format-fieldset {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin: -4px 0 16px;
+  padding: 10px 12px;
+  border: 1px solid var(--colour-border);
+  border-radius: 14px;
+  background: var(--colour-surface-subtle);
+}
+
+.coordinate-format-fieldset legend {
+  padding: 0 4px;
+  color: var(--colour-text-muted);
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.coordinate-format-fieldset label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.88rem;
+  font-weight: 650;
+}
+
 .result-metrics {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
