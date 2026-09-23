@@ -61,6 +61,7 @@ export default function App() {
   const [directionInput, setDirectionInput] = useState<SolarNoonObservation['meridianDirection']>(() => observation.meridianDirection);
   const [coordinateFormat, setCoordinateFormat] = useState<CoordinateFormat>('decimal');
   const [formError, setFormError] = useState<string | null>(null);
+  const [shareStatus, setShareStatus] = useState<string | null>(null);
   const ephemeris = ephemerisProvider.at(observation.timestampUtc);
   const result = calculateSolarNoonLocation(observation, ephemeris);
   const submittedDate = observation.timestampUtc.slice(0, 10);
@@ -88,6 +89,17 @@ export default function App() {
     };
     setObservation(nextObservation);
     window.history.replaceState({}, '', buildObservationQuery(nextObservation));
+    setShareStatus(null);
+  }
+
+  async function handleCopyShareLink() {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(shareHref);
+      setShareStatus('Share link copied.');
+      return;
+    }
+
+    setShareStatus('Share link ready to copy from your browser address bar.');
   }
 
   return (
@@ -223,7 +235,8 @@ export default function App() {
               Degrees minutes seconds
             </label>
           </fieldset>
-          <a className="share-link" href={shareHref}>Copy share link</a>
+          <button className="share-link" type="button" onClick={handleCopyShareLink}>Copy share link</button>
+          {shareStatus ? <p className="share-status" aria-live="polite">{shareStatus}</p> : null}
           <dl className="result-metrics">
             <div>
               <dt>Zenith distance</dt>

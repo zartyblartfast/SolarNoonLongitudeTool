@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { vi } from 'vitest';
 import App from './App';
 
 describe('App progress page', () => {
@@ -180,8 +181,13 @@ describe('App progress page', () => {
     expect(screen.getByText(/17\.06° N, 134\.94° E/i)).toBeInTheDocument();
   });
 
-  it('updates the share link after recalculation', async () => {
+  it('copies the share link after recalculation', async () => {
     const user = userEvent.setup();
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText }
+    });
     window.history.pushState({}, '', '/');
     render(<App />);
 
@@ -189,10 +195,11 @@ describe('App progress page', () => {
     await user.clear(altitudeInput);
     await user.type(altitudeInput, '50');
     await user.click(screen.getByRole('button', { name: /calculate location/i }));
+    await user.click(screen.getByRole('button', { name: /copy share link/i }));
 
-    expect(screen.getByRole('link', { name: /copy share link/i })).toHaveAttribute(
-      'href',
+    expect(writeText).toHaveBeenCalledWith(
       expect.stringContaining('?date=2026-09-22&time=02%3A12&alt=50&dir=north')
     );
+    expect(screen.getByText(/share link copied/i)).toBeInTheDocument();
   });
 });

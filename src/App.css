@@ -332,14 +332,23 @@ p:last-child {
   padding: 0 14px;
   border: 1px solid var(--colour-primary);
   border-radius: 999px;
+  background: var(--colour-surface);
   color: var(--colour-primary);
   font-size: 0.88rem;
   font-weight: 750;
   text-decoration: none;
+  cursor: pointer;
 }
 
 .share-link:hover {
   background: var(--colour-primary-subtle);
+}
+
+.share-status {
+  margin: -8px 0 14px;
+  color: var(--colour-text-muted);
+  font-size: 0.84rem;
+  font-weight: 700;
 }
 
 .result-metrics {
