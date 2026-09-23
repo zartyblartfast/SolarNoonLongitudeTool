@@ -132,4 +132,17 @@ describe('App progress page', () => {
     expect(screen.queryByText(/inputs changed — recalculate to update the result/i)).not.toBeInTheDocument();
     expect(screen.getByText(/39\.65° S, 145\.22° E/i)).toBeInTheDocument();
   });
+
+  it('shows the five-step calculation trace from the domain result', () => {
+    render(<App />);
+
+    expect(screen.getByRole('heading', { name: /how this answer was found/i })).toBeInTheDocument();
+    expect(screen.getByText(/find the sun’s declination/i)).toBeInTheDocument();
+    expect(screen.getByText(/convert altitude to zenith distance/i)).toBeInTheDocument();
+    expect(screen.getByText(/calculate latitude/i)).toBeInTheDocument();
+    expect(screen.getByText(/find the equation of time/i)).toBeInTheDocument();
+    expect(screen.getByText(/convert solar-noon time to longitude/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/z = 90° - h/i).length).toBeGreaterThan(0);
+    expect(screen.getByText(/λ = \(720 - U - E\) \/ 4/i)).toBeInTheDocument();
+  });
 });

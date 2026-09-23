@@ -222,6 +222,38 @@ export default function App() {
         </section>
       </section>
 
+      <section className="panel trace-panel" aria-labelledby="trace-title">
+        <div className="trace-heading">
+          <p className="eyebrow">Calculation trace</p>
+          <h2 id="trace-title">How this answer was found</h2>
+          <p>
+            Each displayed value comes from the same domain result that drives the coordinate estimate and
+            diagrams.
+          </p>
+        </div>
+        <ol className="trace-list">
+          {result.trace.map((step) => (
+            <li key={step.id}>
+              <h3>{step.label}</h3>
+              <dl>
+                <div>
+                  <dt>Formula</dt>
+                  <dd>{step.expression}</dd>
+                </div>
+                <div>
+                  <dt>Substitution</dt>
+                  <dd>{step.substitution}</dd>
+                </div>
+                <div>
+                  <dt>Result</dt>
+                  <dd>{step.result}</dd>
+                </div>
+              </dl>
+            </li>
+          ))}
+        </ol>
+      </section>
+
       <section className="lesson-grid" aria-label="Calculation diagrams">
         <article className="panel lesson-card" aria-labelledby="latitude-diagram-section-title">
           <div className="lesson-copy">
