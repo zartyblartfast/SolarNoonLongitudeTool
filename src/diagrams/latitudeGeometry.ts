@@ -39,6 +39,22 @@ export interface LatitudeDiagramGeometry {
     sunlight: { start: Point; end: Point };
     subsolarRadius: { start: Point; end: Point };
   };
+  arcs: {
+    latitude: AngleArc;
+    declination: AngleArc;
+    altitude: AngleArc;
+    zenithDistance: AngleArc;
+  };
+}
+
+export interface AngleArc {
+  center: Point;
+  radius: number;
+  startAngleDeg: number;
+  endAngleDeg: number;
+  valueDeg: number;
+  path: string;
+  labelPoint: Point;
 }
 
 const CENTER: Point = { x: 140, y: 140 };
@@ -55,6 +71,10 @@ export function buildLatitudeDiagramGeometry(input: LatitudeDiagramInput): Latit
   const observer = add(CENTER, scale(observerRadius, EARTH_RADIUS));
   const subsolarPoint = add(CENTER, scale(subsolarRadius, EARTH_RADIUS));
   const zenith = add(observer, scale(observerRadius, LINE_EXTENSION));
+  const latitudeArc = createArc(CENTER, 30, 0, input.latitudeDeg, input.latitudeDeg);
+  const declinationArc = createArc(CENTER, 44, 0, input.declinationDeg, input.declinationDeg);
+  const altitudeArc = createArcBetweenVectors(observer, 26, horizon, sunlightDirection, input.solarAltitudeDeg);
+  const zenithDistanceArc = createArcBetweenVectors(observer, 38, observerRadius, sunlightDirection, input.zenithDistanceDeg);
 
   return {
     center: CENTER,
@@ -94,6 +114,12 @@ export function buildLatitudeDiagramGeometry(input: LatitudeDiagramInput): Latit
         start: CENTER,
         end: subsolarPoint
       }
+    },
+    arcs: {
+      latitude: latitudeArc,
+      declination: declinationArc,
+      altitude: altitudeArc,
+      zenithDistance: zenithDistanceArc
     }
   };
 }
@@ -127,4 +153,50 @@ function perpendicularClockwise(vector: Vector): Vector {
     x: vector.y,
     y: -vector.x
   };
+}
+
+function createArcBetweenVectors(center: Point, radius: number, startVector: Vector, endVector: Vector, valueDeg: number): AngleArc {
+  return createArc(center, radius, vectorAngleDeg(startVector), vectorAngleDeg(endVector), valueDeg);
+}
+
+function createArc(center: Point, radius: number, startAngleDeg: number, endAngleDeg: number, valueDeg: number): AngleArc {
+  const start = pointOnArc(center, radius, startAngleDeg);
+  const end = pointOnArc(center, radius, endAngleDeg);
+  const delta = normalizeDeltaDeg(endAngleDeg - startAngleDeg);
+  const largeArcFlag = Math.abs(delta) > 180 ? 1 : 0;
+  const sweepFlag = delta >= 0 ? 0 : 1;
+  const labelPoint = pointOnArc(center, radius + 13, startAngleDeg + delta / 2);
+
+  return {
+    center,
+    radius,
+    startAngleDeg,
+    endAngleDeg,
+    valueDeg,
+    path: `M ${formatCoord(start.x)} ${formatCoord(start.y)} A ${radius} ${radius} 0 ${largeArcFlag} ${sweepFlag} ${formatCoord(end.x)} ${formatCoord(end.y)}`,
+    labelPoint
+  };
+}
+
+function pointOnArc(center: Point, radius: number, angleDeg: number): Point {
+  const angleRad = (angleDeg * Math.PI) / 180;
+  return {
+    x: center.x + radius * Math.cos(angleRad),
+    y: center.y - radius * Math.sin(angleRad)
+  };
+}
+
+function vectorAngleDeg(vector: Vector): number {
+  return (Math.atan2(-vector.y, vector.x) * 180) / Math.PI;
+}
+
+function normalizeDeltaDeg(deltaDeg: number): number {
+  let normalized = deltaDeg;
+  while (normalized > 180) normalized -= 360;
+  while (normalized <= -180) normalized += 360;
+  return normalized;
+}
+
+function formatCoord(value: number): string {
+  return value.toFixed(3).replace(/0+$/, '').replace(/\.$/, '');
 }

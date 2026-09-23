@@ -20,4 +20,24 @@ describe('LatitudeDiagram', () => {
     expect(screen.getByTestId('latitude-sunlight')).toBeInTheDocument();
     expect(screen.getByTestId('latitude-observer')).toBeInTheDocument();
   });
+
+  it('renders labelled angle arcs for the key latitude relationships', () => {
+    render(
+      <LatitudeDiagram
+        latitudeDeg={-37.4443}
+        declinationDeg={0.3557}
+        solarAltitudeDeg={52.2}
+        zenithDistanceDeg={37.8}
+      />
+    );
+
+    expect(screen.getByTestId('latitude-arc')).toBeInTheDocument();
+    expect(screen.getByTestId('declination-arc')).toBeInTheDocument();
+    expect(screen.getByTestId('altitude-arc')).toBeInTheDocument();
+    expect(screen.getByTestId('zenith-distance-arc')).toBeInTheDocument();
+    expect(screen.getByText(/φ latitude/i)).toBeInTheDocument();
+    expect(screen.getByText(/δ declination/i)).toBeInTheDocument();
+    expect(screen.getByText(/h altitude/i)).toBeInTheDocument();
+    expect(screen.getByText(/z zenith distance/i)).toBeInTheDocument();
+  });
 });

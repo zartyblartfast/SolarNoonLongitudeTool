@@ -54,4 +54,21 @@ describe('buildLatitudeDiagramGeometry', () => {
     expect(Math.abs(dot(subsolarRadius, geometry.vectors.sunlightPerpendicular))).toBeLessThan(1e-6);
     expect(dot(subsolarRadius, geometry.vectors.sunlightDirection)).toBeGreaterThan(0);
   });
+
+  it('derives named angle arcs for latitude, declination, altitude, and zenith distance', () => {
+    const geometry = buildLatitudeDiagramGeometry({
+      latitudeDeg: -37.4443,
+      declinationDeg: 0.3557,
+      solarAltitudeDeg: 52.2,
+      zenithDistanceDeg: 37.8
+    });
+
+    expect(geometry.arcs.latitude.valueDeg).toBeCloseTo(-37.4443, 4);
+    expect(geometry.arcs.declination.valueDeg).toBeCloseTo(0.3557, 4);
+    expect(geometry.arcs.altitude.valueDeg).toBeCloseTo(52.2, 4);
+    expect(geometry.arcs.zenithDistance.valueDeg).toBeCloseTo(37.8, 4);
+
+    expect(geometry.arcs.latitude.path).toMatch(/^M /);
+    expect(geometry.arcs.altitude.path).toMatch(/^M /);
+  });
 });

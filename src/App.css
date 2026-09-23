@@ -213,6 +213,29 @@ p:last-child {
   stroke-width: 2;
 }
 
+.diagram-arc {
+  fill: none;
+  stroke-width: 2.8;
+  stroke-linecap: round;
+}
+
+.latitude-arc {
+  stroke: #6d3bb3;
+}
+
+.declination-arc {
+  stroke: #b94f00;
+}
+
+.altitude-arc {
+  stroke: #00747a;
+}
+
+.zenith-distance-arc {
+  stroke: #2459a6;
+  stroke-dasharray: 3 3;
+}
+
 .diagram-observer {
   fill: var(--colour-longitude);
   stroke: #fff;

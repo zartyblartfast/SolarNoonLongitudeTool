@@ -85,6 +85,13 @@ export function LatitudeDiagram({
           />
         </g>
 
+        <g className="diagram-layer angle-arcs">
+          <path data-testid="latitude-arc" d={geometry.arcs.latitude.path} className="diagram-arc latitude-arc" />
+          <path data-testid="declination-arc" d={geometry.arcs.declination.path} className="diagram-arc declination-arc" />
+          <path data-testid="altitude-arc" d={geometry.arcs.altitude.path} className="diagram-arc altitude-arc" />
+          <path data-testid="zenith-distance-arc" d={geometry.arcs.zenithDistance.path} className="diagram-arc zenith-distance-arc" />
+        </g>
+
         <g className="diagram-layer markers">
           <circle
             data-testid="latitude-observer"
@@ -101,6 +108,10 @@ export function LatitudeDiagram({
           <text x="18" y="52">Declination: {formatSigned(declinationDeg)}°</text>
           <text x="18" y="72">Altitude h: {formatNumber(solarAltitudeDeg)}°</text>
           <text x="18" y="92">Zenith distance z: {formatNumber(zenithDistanceDeg)}°</text>
+          <text x={geometry.arcs.latitude.labelPoint.x} y={geometry.arcs.latitude.labelPoint.y}>φ latitude</text>
+          <text x={geometry.arcs.declination.labelPoint.x} y={geometry.arcs.declination.labelPoint.y}>δ declination</text>
+          <text x={geometry.arcs.altitude.labelPoint.x} y={geometry.arcs.altitude.labelPoint.y}>h altitude</text>
+          <text x={geometry.arcs.zenithDistance.labelPoint.x} y={geometry.arcs.zenithDistance.labelPoint.y}>z zenith distance</text>
         </g>
       </svg>
       <figcaption className="diagram-text-alternative">
