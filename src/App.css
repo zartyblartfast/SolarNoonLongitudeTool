@@ -1,0 +1,203 @@
+:root {
+  --colour-page: #f5f7fa;
+  --colour-surface: #ffffff;
+  --colour-surface-subtle: #eef3f6;
+  --colour-text: #17212b;
+  --colour-text-muted: #5e6b76;
+  --colour-border: #d7e0e7;
+  --colour-primary: #126e82;
+  --colour-primary-subtle: #e4f2f4;
+  --colour-sun: #e9a400;
+  --colour-earth-water: #dceffc;
+  --colour-longitude: #a82762;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--colour-text);
+  background: var(--colour-page);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+.app-shell {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 32px 0 56px;
+}
+
+.hero,
+.panel {
+  background: var(--colour-surface);
+  border: 1px solid var(--colour-border);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.hero {
+  margin-bottom: 24px;
+}
+
+.panel + .panel {
+  margin-top: 24px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--colour-primary);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  max-width: 760px;
+  margin-bottom: 16px;
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  line-height: 1.1;
+}
+
+h2 {
+  margin-bottom: 12px;
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  line-height: 1.2;
+}
+
+h3 {
+  margin-bottom: 8px;
+  font-size: 1.125rem;
+}
+
+p {
+  max-width: 72ch;
+  line-height: 1.55;
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
+.lede {
+  font-size: 1.125rem;
+  color: var(--colour-text-muted);
+}
+
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
+  gap: 24px;
+  align-items: center;
+}
+
+.globe-placeholder {
+  border: 1px solid var(--colour-border);
+  border-radius: 12px;
+  padding: 16px;
+  background: var(--colour-surface-subtle);
+  text-align: center;
+}
+
+.globe-placeholder svg {
+  width: min(100%, 260px);
+  height: auto;
+}
+
+.globe-placeholder p {
+  margin: 8px auto 0;
+  font-size: 0.875rem;
+  color: var(--colour-text-muted);
+}
+
+.globe-water {
+  fill: var(--colour-earth-water);
+  stroke: var(--colour-primary);
+  stroke-width: 2;
+}
+
+.globe-graticule {
+  fill: none;
+  stroke: var(--colour-primary);
+  stroke-width: 1.5;
+  stroke-opacity: 0.35;
+}
+
+.observer-dot {
+  fill: var(--colour-longitude);
+  stroke: #fff;
+  stroke-width: 2;
+}
+
+.sun-dot {
+  fill: var(--colour-sun);
+  stroke: #fff;
+  stroke-width: 2;
+}
+
+.phase-list {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.phase-list li {
+  border: 1px solid var(--colour-border);
+  border-radius: 12px;
+  padding: 16px;
+  background: #fff;
+}
+
+.phase-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-size: 0.8rem;
+  color: var(--colour-text-muted);
+}
+
+.phase-id,
+.phase-status {
+  font-weight: 700;
+}
+
+.phase-status {
+  color: var(--colour-primary);
+}
+
+.phase-list p {
+  font-size: 0.9rem;
+  color: var(--colour-text-muted);
+}
+
+@media (max-width: 899px) {
+  .split,
+  .phase-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-shell {
+    width: min(100% - 24px, 1180px);
+    padding-top: 16px;
+  }
+
+  .hero,
+  .panel {
+    padding: 16px;
+  }
+}

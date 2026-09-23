@@ -570,6 +570,21 @@ Account for date wrapping near midnight. Do not derive east/west from a naive sa
 
 ## 15. Map and uncertainty
 
+### 15.0 Earth context globe
+
+Before or alongside the map fallback, the interface may include a compact orthographic Earth context globe generated as inline SVG. Its purpose is to make the solved observer location and subsolar point feel Earth-like while the schematic diagrams continue to teach the calculation.
+
+The globe must:
+
+- appear after a valid result, not as a decorative hero graphic;
+- show the estimated observer point and subsolar point with labels or a legend;
+- use a subtle graticule and restrained colours from the diagram token set;
+- remain readable at mobile widths;
+- provide a text alternative explaining what the markers mean; and
+- avoid map controls, projection dropdowns, tile layers, or draggable globe behaviour in the MVP.
+
+Land shapes may be added only if they remain lightweight, offline-capable, and visually secondary to the educational markers.
+
 ### 15.1 Map behaviour
 
 The map is supporting context, not part of the calculation.

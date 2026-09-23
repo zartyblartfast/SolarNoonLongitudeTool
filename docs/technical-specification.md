@@ -43,7 +43,9 @@ src/
   diagrams/
     LatitudeDiagram.tsx
     LongitudeDiagram.tsx
+    EarthContextGlobe.tsx
     diagramGeometry.ts
+    orthographicGlobeGeometry.ts
     diagramTheme.ts
   domain/
     observation.ts
@@ -266,6 +268,22 @@ The diagram should have two presentation states:
 - Capture visual-regression snapshots at representative values.
 - Include cases that change the Sun from north to south and cross ±180° longitude.
 - Test at mobile and desktop viewports.
+
+### 8.5 Orthographic Earth context globe
+
+The MVP may include a supporting orthographic SVG globe that updates from the same calculation state as the result. It is an educational context diagram, not a full map component.
+
+Requirements:
+
+- render as inline SVG with stable data attributes;
+- show Earth outline, graticule, estimated observer location, and subsolar point;
+- optionally show simplified land shapes if they do not compromise bundle size, readability, or offline operation;
+- derive all marker positions from tested projection helpers;
+- provide `<title>`, `<desc>`, and an adjacent text alternative;
+- avoid pan, zoom, projection switching, tile loading, and external map services in the MVP; and
+- preserve the latitude and longitude schematic diagrams as the primary teaching diagrams.
+
+Use lightweight projection utilities such as `d3-geo` for orthographic projection math. Do not import a full map-widget framework unless a later product decision requires interactive mapping.
 
 ## 9. Mapping
 

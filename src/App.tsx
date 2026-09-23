@@ -1,0 +1,102 @@
+import './App.css';
+
+const phases = [
+  {
+    id: 'Phase 1',
+    title: 'Foundation and progress preview',
+    status: 'Completed',
+    detail: 'Create the React/Vite app shell and keep a visible progress page available on a local server.'
+  },
+  {
+    id: 'Phase 2',
+    title: 'Solar-noon calculation engine',
+    status: 'Planned',
+    detail: 'Implement the pure domain model, validation, trace output, and the Kinglake reference case.'
+  },
+  {
+    id: 'Phase 3',
+    title: 'Schematic latitude and longitude diagrams',
+    status: 'Planned',
+    detail: 'Build the main educational SVGs for altitude-to-latitude and time-to-longitude reasoning.'
+  },
+  {
+    id: 'Phase 4',
+    title: 'Earth-like context globe',
+    status: 'Planned',
+    detail: 'Add a lightweight Earth-like SVG globe showing the observer estimate and subsolar point.'
+  },
+  {
+    id: 'Phase 5',
+    title: 'Guided UI and verification',
+    status: 'Planned',
+    detail: 'Connect the form, results, diagrams, accessibility checks, browser tests, and responsive review.'
+  }
+];
+
+export default function App() {
+  return (
+    <main className="app-shell">
+      <section className="hero" aria-labelledby="page-title">
+        <p className="eyebrow">Educational tool · specification-to-build progress</p>
+        <h1 id="page-title">Solar Noon Location Explorer</h1>
+        <p className="lede">
+          This app explores the inverse solar-noon problem: given the UTC time of local solar noon,
+          the Sun&apos;s corrected altitude, and whether the Sun was due north or due south, estimate
+          the observer&apos;s latitude and longitude while showing why the calculation works.
+        </p>
+      </section>
+
+      <section className="panel" aria-labelledby="current-goal-title">
+        <h2 id="current-goal-title">Current build goal</h2>
+        <p>
+          Build a clear single-page educational calculator first, then add diagrams that respond to the
+          same inputs. The diagrams should provide feedback to the user as values change rather than act
+          as decorative illustrations.
+        </p>
+      </section>
+
+      <section className="panel" aria-labelledby="earth-context-title">
+        <div className="split">
+          <div>
+            <h2 id="earth-context-title">Orthographic Earth context</h2>
+            <p>
+              The Earth-like globe will be a supporting context diagram. It will show the estimated
+              observer location, the subsolar point, and simple latitude/longitude references.
+            </p>
+            <p>
+              It will not replace the latitude and longitude schematic diagrams, because those remain the
+              clearest way to explain the terms, symbols, and calculation steps.
+            </p>
+          </div>
+          <div className="globe-placeholder" role="img" aria-label="Placeholder for a future orthographic Earth context globe">
+            <svg viewBox="0 0 220 220" aria-hidden="true">
+              <circle className="globe-water" cx="110" cy="110" r="92" />
+              <ellipse className="globe-graticule" cx="110" cy="110" rx="92" ry="36" />
+              <path className="globe-graticule" d="M110 18 C76 48 76 172 110 202 C144 172 144 48 110 18" />
+              <path className="globe-graticule" d="M18 110 H202" />
+              <circle className="observer-dot" cx="151" cy="151" r="5" />
+              <circle className="sun-dot" cx="112" cy="109" r="5" />
+            </svg>
+            <p>Placeholder: observer and subsolar points will be projected from the calculation.</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="panel" aria-labelledby="progress-title">
+        <h2 id="progress-title">Implementation progress</h2>
+        <ol className="phase-list">
+          {phases.map((phase) => (
+            <li key={phase.id}>
+              <div className="phase-header">
+                <span className="phase-id">{phase.id}</span>
+                <span className="phase-status">{phase.status}</span>
+              </div>
+              <h3>{phase.title}</h3>
+              <p>{phase.detail}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+    </main>
+  );
+}

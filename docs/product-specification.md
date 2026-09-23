@@ -113,6 +113,20 @@ The app displays:
 
 The longitude SVG updates to show the prime meridian, observer meridian, and longitude angle.
 
+### Step 4a — Place the result on an Earth context globe
+
+The app may display a supporting orthographic Earth-context SVG once a result exists. This globe helps connect the schematic calculation to the real Earth, but it must not replace the latitude and longitude teaching diagrams.
+
+The globe should show:
+
+- the estimated observer location;
+- the subsolar point at the observation timestamp;
+- a graticule or equivalent latitude/longitude reference;
+- the observer meridian or longitude reference where useful; and
+- labels or a legend that connect the globe markers to the calculation trace.
+
+The MVP globe is a deterministic, non-interactive educational diagram rather than a general-purpose map widget.
+
 ### Step 5 — Present and explore the result
 
 The app displays:
