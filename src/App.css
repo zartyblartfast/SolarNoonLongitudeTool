@@ -154,11 +154,12 @@ p:last-child {
   margin-top: 16px;
 }
 
-.observation-form label {
+.observation-form > label {
   grid-column: 1 / -1;
   font-weight: 700;
 }
 
+.plain-input,
 .input-with-unit {
   display: flex;
   align-items: center;
@@ -166,6 +167,14 @@ p:last-child {
   border: 1px solid var(--colour-border);
   border-radius: 8px;
   background: var(--colour-surface);
+}
+
+.plain-input {
+  padding: 0 12px;
+  font: inherit;
+}
+
+.input-with-unit {
   overflow: hidden;
 }
 
@@ -187,6 +196,27 @@ p:last-child {
   margin: 0;
   color: var(--colour-text-muted);
   font-size: 0.875rem;
+}
+
+.direction-fieldset {
+  display: grid;
+  gap: 10px;
+  grid-column: 1 / -1;
+  margin: 8px 0 0;
+  padding: 14px;
+  border: 1px solid var(--colour-border);
+  border-radius: 8px;
+}
+
+.direction-fieldset legend {
+  padding: 0 4px;
+  font-weight: 700;
+}
+
+.direction-fieldset label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .observation-form button {

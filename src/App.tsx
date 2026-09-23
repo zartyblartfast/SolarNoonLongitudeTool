@@ -54,14 +54,19 @@ const kinglakeEphemeris: SolarEphemerisAtTime = {
 
 export default function App() {
   const [observation, setObservation] = useState<SolarNoonObservation>(kinglakeObservation);
+  const [dateInput, setDateInput] = useState('2026-09-22');
+  const [timeInput, setTimeInput] = useState('02:12');
   const [altitudeInput, setAltitudeInput] = useState(String(kinglakeObservation.solarAltitudeDeg));
+  const [directionInput, setDirectionInput] = useState<SolarNoonObservation['meridianDirection']>(kinglakeObservation.meridianDirection);
   const result = calculateSolarNoonLocation(observation, kinglakeEphemeris);
 
   function handleObservationSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setObservation({
       ...observation,
-      solarAltitudeDeg: Number(altitudeInput)
+      timestampUtc: `${dateInput}T${timeInput}:00Z`,
+      solarAltitudeDeg: Number(altitudeInput),
+      meridianDirection: directionInput
     });
   }
 
@@ -120,6 +125,24 @@ export default function App() {
           result and diagrams respond to observation input changes.
         </p>
         <form className="observation-form" onSubmit={handleObservationSubmit}>
+          <label htmlFor="utc-date-input">Date of solar noon (UTC)</label>
+          <input
+            id="utc-date-input"
+            className="plain-input"
+            type="date"
+            value={dateInput}
+            onChange={(event) => setDateInput(event.target.value)}
+          />
+
+          <label htmlFor="utc-time-input">Time of solar noon (UTC)</label>
+          <input
+            id="utc-time-input"
+            className="plain-input"
+            type="time"
+            value={timeInput}
+            onChange={(event) => setTimeInput(event.target.value)}
+          />
+
           <label htmlFor="solar-altitude-input">Solar altitude at noon</label>
           <div className="input-with-unit">
             <input
@@ -134,6 +157,40 @@ export default function App() {
             <span aria-hidden="true">°</span>
           </div>
           <p className="field-helper">The corrected angle of the Sun’s centre above the true horizon.</p>
+
+          <fieldset className="direction-fieldset">
+            <legend>At solar noon, the Sun was:</legend>
+            <label>
+              <input
+                type="radio"
+                name="meridian-direction"
+                value="north"
+                checked={directionInput === 'north'}
+                onChange={() => setDirectionInput('north')}
+              />
+              Due north
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="meridian-direction"
+                value="south"
+                checked={directionInput === 'south'}
+                onChange={() => setDirectionInput('south')}
+              />
+              Due south
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="meridian-direction"
+                value="overhead"
+                checked={directionInput === 'overhead'}
+                onChange={() => setDirectionInput('overhead')}
+              />
+              Directly overhead
+            </label>
+          </fieldset>
           <button type="submit">Calculate location</button>
         </form>
       </section>

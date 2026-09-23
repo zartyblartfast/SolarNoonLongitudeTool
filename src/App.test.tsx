@@ -70,4 +70,24 @@ describe('App progress page', () => {
     expect(screen.getByText(/39\.64° S, 145\.22° E/i)).toBeInTheDocument();
     expect(screen.getAllByText(/zenith distance: 40\.0°/i).length).toBeGreaterThan(0);
   });
+
+  it('shows UTC date, UTC time, and Sun direction controls', () => {
+    render(<App />);
+
+    expect(screen.getByLabelText(/date of solar noon \(utc\)/i)).toHaveValue('2026-09-22');
+    expect(screen.getByLabelText(/time of solar noon \(utc\)/i)).toHaveValue('02:12');
+    expect(screen.getByRole('radio', { name: /due north/i })).toBeChecked();
+    expect(screen.getByRole('radio', { name: /due south/i })).toBeInTheDocument();
+    expect(screen.getByRole('radio', { name: /directly overhead/i })).toBeInTheDocument();
+  });
+
+  it('recalculates the latitude branch when Sun direction changes', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(screen.getByRole('radio', { name: /due south/i }));
+    await user.click(screen.getByRole('button', { name: /calculate location/i }));
+
+    expect(screen.getByText(/38\.16° N, 145\.22° E/i)).toBeInTheDocument();
+  });
 });
