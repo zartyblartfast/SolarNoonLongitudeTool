@@ -100,6 +100,10 @@ p:last-child {
   align-items: center;
 }
 
+.lesson-split {
+  grid-template-columns: minmax(260px, 5fr) minmax(320px, 7fr);
+}
+
 .globe-placeholder {
   border: 1px solid var(--colour-border);
   border-radius: 12px;
@@ -164,6 +168,72 @@ p:last-child {
   fill: var(--colour-sun);
   stroke: #fff;
   stroke-width: 2;
+}
+
+.latitude-diagram-block {
+  margin: 0;
+}
+
+.latitude-diagram {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--colour-border);
+  border-radius: 12px;
+  background: var(--colour-surface-subtle);
+}
+
+.latitude-earth {
+  fill: var(--colour-earth-water);
+  stroke: var(--colour-primary);
+  stroke-width: 2;
+}
+
+.diagram-equator,
+.diagram-axis,
+.diagram-observer-radius,
+.diagram-local-vertical {
+  stroke: var(--colour-text-muted);
+  stroke-width: 1.4;
+  stroke-dasharray: 4 4;
+}
+
+.diagram-horizon {
+  stroke: var(--colour-primary);
+  stroke-width: 2.4;
+}
+
+.diagram-sunlight {
+  stroke: var(--colour-sun);
+  stroke-width: 3;
+}
+
+.diagram-declination {
+  stroke: #b94f00;
+  stroke-width: 2;
+}
+
+.diagram-observer {
+  fill: var(--colour-longitude);
+  stroke: #fff;
+  stroke-width: 2;
+}
+
+.diagram-subsolar {
+  fill: var(--colour-sun);
+  stroke: #fff;
+  stroke-width: 2;
+}
+
+.latitude-diagram text {
+  fill: var(--colour-text);
+  font-size: 11px;
+}
+
+.diagram-text-alternative {
+  margin-top: 12px;
+  color: var(--colour-text-muted);
+  line-height: 1.5;
 }
 
 .phase-list {

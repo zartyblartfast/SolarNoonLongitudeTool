@@ -1,6 +1,7 @@
 import './App.css';
 import { calculateSolarNoonLocation } from './domain/solarNoonLocation';
 import type { SolarEphemerisAtTime, SolarNoonObservation } from './domain/observation';
+import { LatitudeDiagram } from './diagrams/LatitudeDiagram';
 
 const phases = [
   {
@@ -18,7 +19,7 @@ const phases = [
   {
     id: 'Phase 3',
     title: 'Schematic latitude and longitude diagrams',
-    status: 'Planned',
+    status: 'In progress',
     detail: 'Build the main educational SVGs for altitude-to-latitude and time-to-longitude reasoning.'
   },
   {
@@ -112,6 +113,25 @@ export default function App() {
           <span>Zenith distance: {formatDegrees(kinglakeResult.zenithDistanceDeg)}</span>
           <span>Solar declination: {formatSignedDegrees(kinglakeResult.declinationDeg)}</span>
           <span>Equation of time: {kinglakeResult.equationOfTimeMinutes.toFixed(2)} minutes</span>
+        </div>
+      </section>
+
+      <section className="panel" aria-labelledby="latitude-diagram-section-title">
+        <div className="split lesson-split">
+          <div>
+            <h2 id="latitude-diagram-section-title">Latitude: using the Sun’s altitude</h2>
+            <p>
+              This first schematic SVG connects the calculated numbers to the meridian-section geometry.
+              It shows Earth, the observer, true horizon, local vertical, parallel sunlight, the subsolar
+              point, and the key relationship between altitude and zenith distance.
+            </p>
+          </div>
+          <LatitudeDiagram
+            latitudeDeg={kinglakeResult.latitudeDeg}
+            declinationDeg={kinglakeResult.declinationDeg}
+            solarAltitudeDeg={kinglakeObservation.solarAltitudeDeg}
+            zenithDistanceDeg={kinglakeResult.zenithDistanceDeg}
+          />
         </div>
       </section>
 
