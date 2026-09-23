@@ -1,4 +1,5 @@
 import './App.css';
+import { useState, type FormEvent } from 'react';
 import { calculateSolarNoonLocation } from './domain/solarNoonLocation';
 import type { SolarEphemerisAtTime, SolarNoonObservation } from './domain/observation';
 import { LatitudeDiagram } from './diagrams/LatitudeDiagram';
@@ -51,9 +52,19 @@ const kinglakeEphemeris: SolarEphemerisAtTime = {
   source: 'locked reference fixture'
 };
 
-const kinglakeResult = calculateSolarNoonLocation(kinglakeObservation, kinglakeEphemeris);
-
 export default function App() {
+  const [observation, setObservation] = useState<SolarNoonObservation>(kinglakeObservation);
+  const [altitudeInput, setAltitudeInput] = useState(String(kinglakeObservation.solarAltitudeDeg));
+  const result = calculateSolarNoonLocation(observation, kinglakeEphemeris);
+
+  function handleObservationSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setObservation({
+      ...observation,
+      solarAltitudeDeg: Number(altitudeInput)
+    });
+  }
+
   return (
     <main className="app-shell">
       <section className="hero" aria-labelledby="page-title">
@@ -102,6 +113,31 @@ export default function App() {
         </div>
       </section>
 
+      <section className="panel" aria-labelledby="observation-form-title">
+        <h2 id="observation-form-title">Your solar-noon observation</h2>
+        <p>
+          This first editable slice uses the locked Kinglake ephemeris fixture while proving that the
+          result and diagrams respond to observation input changes.
+        </p>
+        <form className="observation-form" onSubmit={handleObservationSubmit}>
+          <label htmlFor="solar-altitude-input">Solar altitude at noon</label>
+          <div className="input-with-unit">
+            <input
+              id="solar-altitude-input"
+              type="number"
+              min="0"
+              max="90"
+              step="0.1"
+              value={altitudeInput}
+              onChange={(event) => setAltitudeInput(event.target.value)}
+            />
+            <span aria-hidden="true">°</span>
+          </div>
+          <p className="field-helper">The corrected angle of the Sun’s centre above the true horizon.</p>
+          <button type="submit">Calculate location</button>
+        </form>
+      </section>
+
       <section className="panel" aria-labelledby="kinglake-title">
         <h2 id="kinglake-title">Kinglake reference calculation</h2>
         <p>
@@ -110,10 +146,10 @@ export default function App() {
           equation, and trace structure before the production ephemeris adapter is added.
         </p>
         <div className="reference-result" aria-label="Kinglake worked example result">
-          <strong>{formatCoordinatePair(kinglakeResult.latitudeDeg, kinglakeResult.longitudeDeg)}</strong>
-          <span>Zenith distance: {formatDegrees(kinglakeResult.zenithDistanceDeg)}</span>
-          <span>Solar declination: {formatSignedDegrees(kinglakeResult.declinationDeg)}</span>
-          <span>Equation of time: {kinglakeResult.equationOfTimeMinutes.toFixed(2)} minutes</span>
+          <strong>{formatCoordinatePair(result.latitudeDeg, result.longitudeDeg)}</strong>
+          <span>Zenith distance: {formatDegrees(result.zenithDistanceDeg)}</span>
+          <span>Solar declination: {formatSignedDegrees(result.declinationDeg)}</span>
+          <span>Equation of time: {result.equationOfTimeMinutes.toFixed(2)} minutes</span>
         </div>
       </section>
 
@@ -128,10 +164,10 @@ export default function App() {
             </p>
           </div>
           <LatitudeDiagram
-            latitudeDeg={kinglakeResult.latitudeDeg}
-            declinationDeg={kinglakeResult.declinationDeg}
-            solarAltitudeDeg={kinglakeObservation.solarAltitudeDeg}
-            zenithDistanceDeg={kinglakeResult.zenithDistanceDeg}
+            latitudeDeg={result.latitudeDeg}
+            declinationDeg={result.declinationDeg}
+            solarAltitudeDeg={observation.solarAltitudeDeg}
+            zenithDistanceDeg={result.zenithDistanceDeg}
           />
         </div>
       </section>
@@ -147,9 +183,9 @@ export default function App() {
             </p>
           </div>
           <LongitudeDiagram
-            longitudeDeg={kinglakeResult.longitudeDeg}
-            utcMinutesAfterMidnight={kinglakeResult.utcMinutesAfterMidnight}
-            equationOfTimeMinutes={kinglakeResult.equationOfTimeMinutes}
+            longitudeDeg={result.longitudeDeg}
+            utcMinutesAfterMidnight={result.utcMinutesAfterMidnight}
+            equationOfTimeMinutes={result.equationOfTimeMinutes}
           />
         </div>
       </section>

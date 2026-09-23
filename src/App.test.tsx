@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import App from './App';
 
 describe('App progress page', () => {
@@ -55,5 +56,18 @@ describe('App progress page', () => {
 
     expect(screen.getByRole('heading', { name: /longitude: using the utc time of solar noon/i })).toBeInTheDocument();
     expect(screen.getByRole('img', { name: /longitude diagram/i })).toBeInTheDocument();
+  });
+
+  it('recalculates the result and diagrams from edited observation inputs', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    const altitudeInput = screen.getByRole('spinbutton', { name: /solar altitude at noon/i });
+    await user.clear(altitudeInput);
+    await user.type(altitudeInput, '50');
+    await user.click(screen.getByRole('button', { name: /calculate location/i }));
+
+    expect(screen.getByText(/39\.64° S, 145\.22° E/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/zenith distance: 40\.0°/i).length).toBeGreaterThan(0);
   });
 });
