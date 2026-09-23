@@ -11,10 +11,11 @@
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
-    "vite": "latest",
-    "typescript": "latest",
+    "astronomy-engine": "^2.1.19",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "typescript": "latest",
+    "vite": "latest"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "latest",
