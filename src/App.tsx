@@ -56,6 +56,12 @@ export default function App() {
   const [formError, setFormError] = useState<string | null>(null);
   const ephemeris = ephemerisProvider.at(observation.timestampUtc);
   const result = calculateSolarNoonLocation(observation, ephemeris);
+  const submittedDate = observation.timestampUtc.slice(0, 10);
+  const submittedTime = observation.timestampUtc.slice(11, 16);
+  const isResultStale = dateInput !== submittedDate
+    || timeInput !== submittedTime
+    || Number(altitudeInput) !== observation.solarAltitudeDeg
+    || directionInput !== observation.meridianDirection;
 
   function handleObservationSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -180,6 +186,9 @@ export default function App() {
         <section className="panel result-panel" aria-labelledby="result-title">
           <p className="eyebrow">Estimated location</p>
           <h2 id="result-title">Current result</h2>
+          {isResultStale ? (
+            <p className="stale-result-message">Inputs changed — recalculate to update the result.</p>
+          ) : null}
           <div className="coordinate-display" aria-label="Current coordinate estimate">
             {formatCoordinatePair(result.latitudeDeg, result.longitudeDeg)}
           </div>

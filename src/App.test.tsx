@@ -115,4 +115,21 @@ describe('App progress page', () => {
 
     expect(screen.getByText(/not close enough to 90° for an overhead transit/i)).toBeInTheDocument();
   });
+
+  it('marks the current result stale after editing and clears the notice after recalculation', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    const altitudeInput = screen.getByRole('spinbutton', { name: /solar altitude at noon/i });
+    await user.clear(altitudeInput);
+    await user.type(altitudeInput, '50');
+
+    expect(screen.getByText(/inputs changed — recalculate to update the result/i)).toBeInTheDocument();
+    expect(screen.getByText(/37\.45° S, 145\.22° E/i)).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: /calculate location/i }));
+
+    expect(screen.queryByText(/inputs changed — recalculate to update the result/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/39\.65° S, 145\.22° E/i)).toBeInTheDocument();
+  });
 });
