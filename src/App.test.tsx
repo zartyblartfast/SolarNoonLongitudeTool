@@ -3,6 +3,10 @@ import userEvent from '@testing-library/user-event';
 import App from './App';
 
 describe('App progress page', () => {
+  beforeEach(() => {
+    window.history.pushState({}, '', '/');
+  });
+
   it('introduces the educational solar-noon location goal', () => {
     render(<App />);
 
@@ -162,5 +166,33 @@ describe('App progress page', () => {
     await user.click(screen.getByRole('radio', { name: /decimal degrees/i }));
 
     expect(screen.getByText(/37\.45° S, 145\.22° E/i)).toBeInTheDocument();
+  });
+
+  it('initializes the form and result from supported URL query parameters', () => {
+    window.history.pushState({}, '', '?date=2027-01-02&time=03:04&alt=50&dir=south');
+
+    render(<App />);
+
+    expect(screen.getByLabelText(/date of solar noon \(utc\)/i)).toHaveValue('2027-01-02');
+    expect(screen.getByLabelText(/time of solar noon \(utc\)/i)).toHaveValue('03:04');
+    expect(screen.getByRole('spinbutton', { name: /solar altitude at noon/i })).toHaveValue(50);
+    expect(screen.getByRole('radio', { name: /due south/i })).toBeChecked();
+    expect(screen.getByText(/17\.06° N, 134\.94° E/i)).toBeInTheDocument();
+  });
+
+  it('updates the share link after recalculation', async () => {
+    const user = userEvent.setup();
+    window.history.pushState({}, '', '/');
+    render(<App />);
+
+    const altitudeInput = screen.getByRole('spinbutton', { name: /solar altitude at noon/i });
+    await user.clear(altitudeInput);
+    await user.type(altitudeInput, '50');
+    await user.click(screen.getByRole('button', { name: /calculate location/i }));
+
+    expect(screen.getByRole('link', { name: /copy share link/i })).toHaveAttribute(
+      'href',
+      expect.stringContaining('?date=2026-09-22&time=02%3A12&alt=50&dir=north')
+    );
   });
 });

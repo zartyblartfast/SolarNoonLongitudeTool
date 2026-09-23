@@ -6,6 +6,7 @@ import { LatitudeDiagram } from './diagrams/LatitudeDiagram';
 import { LongitudeDiagram } from './diagrams/LongitudeDiagram';
 import { EarthContextGlobe } from './diagrams/EarthContextGlobe';
 import { AstronomyEngineProvider } from './ephemeris/AstronomyEngineProvider';
+import { buildObservationQuery, parseObservationQuery } from './state/urlState';
 
 const phases = [
   {
@@ -51,11 +52,13 @@ const ephemerisProvider = new AstronomyEngineProvider();
 type CoordinateFormat = 'decimal' | 'dms';
 
 export default function App() {
-  const [observation, setObservation] = useState<SolarNoonObservation>(kinglakeObservation);
-  const [dateInput, setDateInput] = useState('2026-09-22');
-  const [timeInput, setTimeInput] = useState('02:12');
-  const [altitudeInput, setAltitudeInput] = useState(String(kinglakeObservation.solarAltitudeDeg));
-  const [directionInput, setDirectionInput] = useState<SolarNoonObservation['meridianDirection']>(kinglakeObservation.meridianDirection);
+  const [observation, setObservation] = useState<SolarNoonObservation>(() => (
+    parseObservationQuery(window.location.search, kinglakeObservation)
+  ));
+  const [dateInput, setDateInput] = useState(() => observation.timestampUtc.slice(0, 10));
+  const [timeInput, setTimeInput] = useState(() => observation.timestampUtc.slice(11, 16));
+  const [altitudeInput, setAltitudeInput] = useState(() => String(observation.solarAltitudeDeg));
+  const [directionInput, setDirectionInput] = useState<SolarNoonObservation['meridianDirection']>(() => observation.meridianDirection);
   const [coordinateFormat, setCoordinateFormat] = useState<CoordinateFormat>('decimal');
   const [formError, setFormError] = useState<string | null>(null);
   const ephemeris = ephemerisProvider.at(observation.timestampUtc);
@@ -66,6 +69,7 @@ export default function App() {
     || timeInput !== submittedTime
     || Number(altitudeInput) !== observation.solarAltitudeDeg
     || directionInput !== observation.meridianDirection;
+  const shareHref = `${window.location.origin}${window.location.pathname}${buildObservationQuery(observation)}`;
 
   function handleObservationSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -76,12 +80,14 @@ export default function App() {
     }
 
     setFormError(null);
-    setObservation({
+    const nextObservation = {
       ...observation,
       timestampUtc: `${dateInput}T${timeInput}:00Z`,
       solarAltitudeDeg: nextAltitude,
       meridianDirection: directionInput
-    });
+    };
+    setObservation(nextObservation);
+    window.history.replaceState({}, '', buildObservationQuery(nextObservation));
   }
 
   return (
@@ -217,6 +223,7 @@ export default function App() {
               Degrees minutes seconds
             </label>
           </fieldset>
+          <a className="share-link" href={shareHref}>Copy share link</a>
           <dl className="result-metrics">
             <div>
               <dt>Zenith distance</dt>

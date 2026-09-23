@@ -323,6 +323,25 @@ p:last-child {
   font-weight: 650;
 }
 
+.share-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  margin: -4px 0 16px;
+  padding: 0 14px;
+  border: 1px solid var(--colour-primary);
+  border-radius: 999px;
+  color: var(--colour-primary);
+  font-size: 0.88rem;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.share-link:hover {
+  background: var(--colour-primary-subtle);
+}
+
 .result-metrics {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
