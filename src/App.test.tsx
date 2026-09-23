@@ -26,6 +26,9 @@ describe('App progress page', () => {
     expect(
       screen.getByText(/not replace the schematic diagrams/i)
     ).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: /earth context globe/i })).toBeInTheDocument();
+    expect(screen.getByTestId('earth-context-observer')).toBeInTheDocument();
+    expect(screen.getByTestId('earth-context-subsolar')).toBeInTheDocument();
   });
 
   it('shows implementation progress phases', () => {

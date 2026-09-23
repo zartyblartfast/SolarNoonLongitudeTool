@@ -435,7 +435,8 @@ p:last-child {
   align-content: start;
 }
 
-.globe-placeholder {
+.globe-placeholder,
+.earth-context-globe-block {
   border: 1px solid var(--colour-border);
   border-radius: 18px;
   padding: 14px;
@@ -443,20 +444,23 @@ p:last-child {
   text-align: center;
 }
 
-.globe-placeholder svg {
+.globe-placeholder svg,
+.earth-context-globe {
   width: min(100%, 220px);
   height: auto;
 }
 
 .globe-water,
 .latitude-earth,
-.longitude-earth {
+.longitude-earth,
+.earth-context-outline {
   fill: var(--colour-earth-water);
   stroke: var(--colour-primary);
   stroke-width: 2;
 }
 
-.globe-graticule {
+.globe-graticule,
+.earth-context-graticule {
   fill: none;
   stroke: var(--colour-primary);
   stroke-width: 1.5;
@@ -464,17 +468,49 @@ p:last-child {
 }
 
 .observer-dot,
-.diagram-observer {
+.diagram-observer,
+.earth-context-observer {
   fill: var(--colour-longitude);
   stroke: #fff;
   stroke-width: 2;
 }
 
 .sun-dot,
-.diagram-subsolar {
+.diagram-subsolar,
+.earth-context-subsolar {
   fill: var(--colour-sun);
   stroke: #fff;
   stroke-width: 2;
+}
+
+.earth-context-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 10px;
+  color: var(--colour-text-muted);
+  font-size: 0.84rem;
+}
+
+.earth-context-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 50%;
+}
+
+.legend-dot.observer {
+  background: var(--colour-longitude);
+}
+
+.legend-dot.subsolar {
+  background: var(--colour-sun);
 }
 
 .latitude-diagram-block,

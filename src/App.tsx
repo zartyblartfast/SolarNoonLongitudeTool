@@ -4,6 +4,7 @@ import { calculateSolarNoonLocation } from './domain/solarNoonLocation';
 import type { SolarNoonObservation } from './domain/observation';
 import { LatitudeDiagram } from './diagrams/LatitudeDiagram';
 import { LongitudeDiagram } from './diagrams/LongitudeDiagram';
+import { EarthContextGlobe } from './diagrams/EarthContextGlobe';
 import { AstronomyEngineProvider } from './ephemeris/AstronomyEngineProvider';
 
 const phases = [
@@ -323,16 +324,12 @@ export default function App() {
               observer location and subsolar point, but it will not replace the schematic diagrams.
             </p>
           </div>
-          <div className="globe-placeholder" role="img" aria-label="Placeholder for a future orthographic Earth context globe">
-            <svg viewBox="0 0 220 220" aria-hidden="true">
-              <circle className="globe-water" cx="110" cy="110" r="92" />
-              <ellipse className="globe-graticule" cx="110" cy="110" rx="92" ry="36" />
-              <path className="globe-graticule" d="M110 18 C76 48 76 172 110 202 C144 172 144 48 110 18" />
-              <path className="globe-graticule" d="M18 110 H202" />
-              <circle className="observer-dot" cx="151" cy="151" r="5" />
-              <circle className="sun-dot" cx="112" cy="109" r="5" />
-            </svg>
-          </div>
+          <EarthContextGlobe
+            observerLatitudeDeg={result.latitudeDeg}
+            observerLongitudeDeg={result.longitudeDeg}
+            subsolarLatitudeDeg={result.declinationDeg}
+            subsolarLongitudeDeg={result.subsolarLongitudeDeg}
+          />
         </section>
 
         <section className="panel compact-panel" aria-labelledby="progress-title">
