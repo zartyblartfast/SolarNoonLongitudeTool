@@ -7,10 +7,10 @@ describe('App progress page', () => {
     render(<App />);
 
     expect(
-      screen.getByRole('heading', { name: /solar noon location explorer/i })
+      screen.getByRole('heading', { name: /find a location from a solar-noon observation/i })
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/educational tool/i)
+      screen.getByText(/educational estimate/i)
     ).toBeInTheDocument();
   });
 
@@ -24,7 +24,7 @@ describe('App progress page', () => {
       screen.getByText(/supporting context diagram/i)
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/not replace the latitude and longitude schematic diagrams/i)
+      screen.getByText(/not replace the schematic diagrams/i)
     ).toBeInTheDocument();
   });
 
@@ -39,9 +39,10 @@ describe('App progress page', () => {
   it('shows the Kinglake reference calculation from the domain engine', () => {
     render(<App />);
 
-    expect(screen.getByRole('heading', { name: /kinglake reference calculation/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /current result/i })).toBeInTheDocument();
     expect(screen.getByText(/37\.45° S, 145\.22° E/i)).toBeInTheDocument();
-    expect(screen.getByText(/zenith distance: 37\.8°/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/zenith distance/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/37\.8°/i).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/astronomy engine/i).length).toBeGreaterThan(0);
   });
 
@@ -69,7 +70,7 @@ describe('App progress page', () => {
     await user.click(screen.getByRole('button', { name: /calculate location/i }));
 
     expect(screen.getByText(/39\.65° S, 145\.22° E/i)).toBeInTheDocument();
-    expect(screen.getAllByText(/zenith distance: 40\.0°/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/40\.0°/i).length).toBeGreaterThan(0);
   });
 
   it('shows UTC date, UTC time, and Sun direction controls', () => {

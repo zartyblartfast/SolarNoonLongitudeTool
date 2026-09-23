@@ -76,36 +76,186 @@ export default function App() {
 
   return (
     <main className="app-shell">
+      <header className="app-header">
+        <span className="wordmark">Solar Noon Location Explorer</span>
+        <span className="header-note">Educational estimate · browser-only calculation</span>
+      </header>
+
       <section className="hero" aria-labelledby="page-title">
-        <p className="eyebrow">Educational tool · specification-to-build progress</p>
-        <h1 id="page-title">Solar Noon Location Explorer</h1>
-        <p className="lede">
-          This app explores the inverse solar-noon problem: given the UTC time of local solar noon,
-          the Sun&apos;s corrected altitude, and whether the Sun was due north or due south, estimate
-          the observer&apos;s latitude and longitude while showing why the calculation works.
-        </p>
+        <div className="hero-copy">
+          <p className="eyebrow">Altitude gives latitude · time gives longitude</p>
+          <h1 id="page-title">Find a location from a solar-noon observation</h1>
+          <p className="lede">
+            Enter the UTC date and time of local solar noon, the Sun’s corrected altitude, and whether it
+            was due north or due south. The app calculates an estimated position and explains each step with
+            diagrams that update from the same inputs.
+          </p>
+        </div>
+        <div className="hero-summary" aria-label="Worked example summary">
+          <strong>Worked example</strong>
+          <span>52.2° altitude → 37.45° S</span>
+          <span>02:12 UTC → 145.22° E</span>
+        </div>
       </section>
 
-      <section className="panel" aria-labelledby="current-goal-title">
-        <h2 id="current-goal-title">Current build goal</h2>
-        <p>
-          Build a clear single-page educational calculator first, then add diagrams that respond to the
-          same inputs. The diagrams should provide feedback to the user as values change rather than act
-          as decorative illustrations.
-        </p>
+      <section className="calculator-grid" aria-label="Calculator workspace">
+        <section className="panel input-panel" aria-labelledby="observation-form-title">
+          <h2 id="observation-form-title">Your solar-noon observation</h2>
+          <p>
+            Start with the worked Kinglake example, then change the inputs and recalculate. UTC is used
+            explicitly; the browser’s local time zone is not applied.
+          </p>
+          <form className="observation-form" noValidate onSubmit={handleObservationSubmit}>
+            <label htmlFor="utc-date-input">Date of solar noon (UTC)</label>
+            <input
+              id="utc-date-input"
+              className="plain-input"
+              type="date"
+              value={dateInput}
+              onChange={(event) => setDateInput(event.target.value)}
+            />
+
+            <label htmlFor="utc-time-input">Time of solar noon (UTC)</label>
+            <input
+              id="utc-time-input"
+              className="plain-input"
+              type="time"
+              value={timeInput}
+              onChange={(event) => setTimeInput(event.target.value)}
+            />
+
+            <label htmlFor="solar-altitude-input">Solar altitude at noon</label>
+            <div className="input-with-unit">
+              <input
+                id="solar-altitude-input"
+                type="number"
+                min="0"
+                max="90"
+                step="0.1"
+                value={altitudeInput}
+                onChange={(event) => setAltitudeInput(event.target.value)}
+              />
+              <span aria-hidden="true">°</span>
+            </div>
+            <p className="field-helper">Corrected angle of the Sun’s centre above the true horizon.</p>
+            {formError ? <p className="form-message form-message-error">{formError}</p> : null}
+
+            <fieldset className="direction-fieldset">
+              <legend>At solar noon, the Sun was:</legend>
+              <label>
+                <input
+                  type="radio"
+                  name="meridian-direction"
+                  value="north"
+                  checked={directionInput === 'north'}
+                  onChange={() => setDirectionInput('north')}
+                />
+                Due north
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="meridian-direction"
+                  value="south"
+                  checked={directionInput === 'south'}
+                  onChange={() => setDirectionInput('south')}
+                />
+                Due south
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="meridian-direction"
+                  value="overhead"
+                  checked={directionInput === 'overhead'}
+                  onChange={() => setDirectionInput('overhead')}
+                />
+                Directly overhead
+              </label>
+            </fieldset>
+            <button type="submit">Calculate location</button>
+          </form>
+        </section>
+
+        <section className="panel result-panel" aria-labelledby="result-title">
+          <p className="eyebrow">Estimated location</p>
+          <h2 id="result-title">Current result</h2>
+          <div className="coordinate-display" aria-label="Current coordinate estimate">
+            {formatCoordinatePair(result.latitudeDeg, result.longitudeDeg)}
+          </div>
+          <dl className="result-metrics">
+            <div>
+              <dt>Zenith distance</dt>
+              <dd>{formatDegrees(result.zenithDistanceDeg)}</dd>
+            </div>
+            <div>
+              <dt>Solar declination</dt>
+              <dd>{formatSignedDegrees(result.declinationDeg)}</dd>
+            </div>
+            <div>
+              <dt>Equation of time</dt>
+              <dd>{result.equationOfTimeMinutes.toFixed(2)} min</dd>
+            </div>
+            <div>
+              <dt>Solar data</dt>
+              <dd>{ephemeris.source}</dd>
+            </div>
+          </dl>
+          {result.warnings.length > 0 ? (
+            <div className="result-warnings" aria-label="Calculation warnings">
+              {result.warnings.map((warning) => (
+                <p key={warning.code} className={`form-message form-message-${warning.severity}`}>
+                  {warning.message}
+                </p>
+              ))}
+            </div>
+          ) : null}
+        </section>
       </section>
 
-      <section className="panel" aria-labelledby="earth-context-title">
-        <div className="split">
+      <section className="lesson-grid" aria-label="Calculation diagrams">
+        <article className="panel lesson-card" aria-labelledby="latitude-diagram-section-title">
+          <div className="lesson-copy">
+            <p className="eyebrow">Latitude diagram</p>
+            <h2 id="latitude-diagram-section-title">Latitude: using the Sun’s altitude</h2>
+            <p>
+              A meridian-section view shows the observer, true horizon, local vertical, parallel sunlight,
+              subsolar point, and the altitude-to-zenith-distance relationship.
+            </p>
+          </div>
+          <LatitudeDiagram
+            latitudeDeg={result.latitudeDeg}
+            declinationDeg={result.declinationDeg}
+            solarAltitudeDeg={observation.solarAltitudeDeg}
+            zenithDistanceDeg={result.zenithDistanceDeg}
+          />
+        </article>
+
+        <article className="panel lesson-card" aria-labelledby="longitude-diagram-section-title">
+          <div className="lesson-copy">
+            <p className="eyebrow">Longitude diagram</p>
+            <h2 id="longitude-diagram-section-title">Longitude: using the UTC time of solar noon</h2>
+            <p>
+              A polar view connects Greenwich, the observer meridian, the longitude angle, sunlight, and
+              Earth’s 15°-per-hour rotation.
+            </p>
+          </div>
+          <LongitudeDiagram
+            longitudeDeg={result.longitudeDeg}
+            utcMinutesAfterMidnight={result.utcMinutesAfterMidnight}
+            equationOfTimeMinutes={result.equationOfTimeMinutes}
+          />
+        </article>
+      </section>
+
+      <section className="support-grid" aria-label="Supporting information">
+        <section className="panel compact-panel" aria-labelledby="earth-context-title">
           <div>
+            <p className="eyebrow">Future context layer</p>
             <h2 id="earth-context-title">Orthographic Earth context</h2>
             <p>
               The Earth-like globe will be a supporting context diagram. It will show the estimated
-              observer location, the subsolar point, and simple latitude/longitude references.
-            </p>
-            <p>
-              It will not replace the latitude and longitude schematic diagrams, because those remain the
-              clearest way to explain the terms, symbols, and calculation steps.
+              observer location and subsolar point, but it will not replace the schematic diagrams.
             </p>
           </div>
           <div className="globe-placeholder" role="img" aria-label="Placeholder for a future orthographic Earth context globe">
@@ -117,164 +267,27 @@ export default function App() {
               <circle className="observer-dot" cx="151" cy="151" r="5" />
               <circle className="sun-dot" cx="112" cy="109" r="5" />
             </svg>
-            <p>Placeholder: observer and subsolar points will be projected from the calculation.</p>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="panel" aria-labelledby="observation-form-title">
-        <h2 id="observation-form-title">Your solar-noon observation</h2>
-        <p>
-          This first editable slice uses the locked Kinglake ephemeris fixture while proving that the
-          result and diagrams respond to observation input changes.
-        </p>
-        <form className="observation-form" noValidate onSubmit={handleObservationSubmit}>
-          <label htmlFor="utc-date-input">Date of solar noon (UTC)</label>
-          <input
-            id="utc-date-input"
-            className="plain-input"
-            type="date"
-            value={dateInput}
-            onChange={(event) => setDateInput(event.target.value)}
-          />
-
-          <label htmlFor="utc-time-input">Time of solar noon (UTC)</label>
-          <input
-            id="utc-time-input"
-            className="plain-input"
-            type="time"
-            value={timeInput}
-            onChange={(event) => setTimeInput(event.target.value)}
-          />
-
-          <label htmlFor="solar-altitude-input">Solar altitude at noon</label>
-          <div className="input-with-unit">
-            <input
-              id="solar-altitude-input"
-              type="number"
-              min="0"
-              max="90"
-              step="0.1"
-              value={altitudeInput}
-              onChange={(event) => setAltitudeInput(event.target.value)}
-            />
-            <span aria-hidden="true">°</span>
+        <section className="panel compact-panel" aria-labelledby="progress-title">
+          <div>
+            <p className="eyebrow">Build status</p>
+            <h2 id="progress-title">Implementation progress</h2>
           </div>
-          <p className="field-helper">The corrected angle of the Sun’s centre above the true horizon.</p>
-          {formError ? <p className="form-message form-message-error">{formError}</p> : null}
-
-          <fieldset className="direction-fieldset">
-            <legend>At solar noon, the Sun was:</legend>
-            <label>
-              <input
-                type="radio"
-                name="meridian-direction"
-                value="north"
-                checked={directionInput === 'north'}
-                onChange={() => setDirectionInput('north')}
-              />
-              Due north
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="meridian-direction"
-                value="south"
-                checked={directionInput === 'south'}
-                onChange={() => setDirectionInput('south')}
-              />
-              Due south
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="meridian-direction"
-                value="overhead"
-                checked={directionInput === 'overhead'}
-                onChange={() => setDirectionInput('overhead')}
-              />
-              Directly overhead
-            </label>
-          </fieldset>
-          <button type="submit">Calculate location</button>
-        </form>
-      </section>
-
-      <section className="panel" aria-labelledby="kinglake-title">
-        <h2 id="kinglake-title">Kinglake reference calculation</h2>
-        <p>
-          The current calculation uses the Astronomy Engine provider for the Sun’s declination,
-          subsolar longitude, and equation of time, then applies the solar-noon sight-reduction model.
-        </p>
-        <div className="reference-result" aria-label="Kinglake worked example result">
-          <strong>{formatCoordinatePair(result.latitudeDeg, result.longitudeDeg)}</strong>
-          <span>Zenith distance: {formatDegrees(result.zenithDistanceDeg)}</span>
-          <span>Solar declination: {formatSignedDegrees(result.declinationDeg)}</span>
-          <span>Equation of time: {result.equationOfTimeMinutes.toFixed(2)} minutes</span>
-          <span>Solar data: {ephemeris.source}</span>
-        </div>
-        {result.warnings.length > 0 ? (
-          <div className="result-warnings" aria-label="Calculation warnings">
-            {result.warnings.map((warning) => (
-              <p key={warning.code} className={`form-message form-message-${warning.severity}`}>
-                {warning.message}
-              </p>
+          <ol className="phase-list">
+            {phases.map((phase) => (
+              <li key={phase.id}>
+                <div className="phase-header">
+                  <span className="phase-id">{phase.id}</span>
+                  <span className="phase-status">{phase.status}</span>
+                </div>
+                <h3>{phase.title}</h3>
+                <p>{phase.detail}</p>
+              </li>
             ))}
-          </div>
-        ) : null}
-      </section>
-
-      <section className="panel" aria-labelledby="latitude-diagram-section-title">
-        <div className="split lesson-split">
-          <div>
-            <h2 id="latitude-diagram-section-title">Latitude: using the Sun’s altitude</h2>
-            <p>
-              This first schematic SVG connects the calculated numbers to the meridian-section geometry.
-              It shows Earth, the observer, true horizon, local vertical, parallel sunlight, the subsolar
-              point, and the key relationship between altitude and zenith distance.
-            </p>
-          </div>
-          <LatitudeDiagram
-            latitudeDeg={result.latitudeDeg}
-            declinationDeg={result.declinationDeg}
-            solarAltitudeDeg={observation.solarAltitudeDeg}
-            zenithDistanceDeg={result.zenithDistanceDeg}
-          />
-        </div>
-      </section>
-
-      <section className="panel" aria-labelledby="longitude-diagram-section-title">
-        <div className="split lesson-split">
-          <div>
-            <h2 id="longitude-diagram-section-title">Longitude: using the UTC time of solar noon</h2>
-            <p>
-              This polar-view SVG connects the UTC time of local solar noon to the observer’s longitude.
-              It shows Greenwich, the observer meridian, the longitude angle, sunlight, and the rule that
-              Earth turns 15° per hour.
-            </p>
-          </div>
-          <LongitudeDiagram
-            longitudeDeg={result.longitudeDeg}
-            utcMinutesAfterMidnight={result.utcMinutesAfterMidnight}
-            equationOfTimeMinutes={result.equationOfTimeMinutes}
-          />
-        </div>
-      </section>
-
-      <section className="panel" aria-labelledby="progress-title">
-        <h2 id="progress-title">Implementation progress</h2>
-        <ol className="phase-list">
-          {phases.map((phase) => (
-            <li key={phase.id}>
-              <div className="phase-header">
-                <span className="phase-id">{phase.id}</span>
-                <span className="phase-status">{phase.status}</span>
-              </div>
-              <h3>{phase.title}</h3>
-              <p>{phase.detail}</p>
-            </li>
-          ))}
-        </ol>
+          </ol>
+        </section>
       </section>
     </main>
   );
