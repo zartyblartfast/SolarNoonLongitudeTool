@@ -2,6 +2,7 @@ import './App.css';
 import { calculateSolarNoonLocation } from './domain/solarNoonLocation';
 import type { SolarEphemerisAtTime, SolarNoonObservation } from './domain/observation';
 import { LatitudeDiagram } from './diagrams/LatitudeDiagram';
+import { LongitudeDiagram } from './diagrams/LongitudeDiagram';
 
 const phases = [
   {
@@ -131,6 +132,24 @@ export default function App() {
             declinationDeg={kinglakeResult.declinationDeg}
             solarAltitudeDeg={kinglakeObservation.solarAltitudeDeg}
             zenithDistanceDeg={kinglakeResult.zenithDistanceDeg}
+          />
+        </div>
+      </section>
+
+      <section className="panel" aria-labelledby="longitude-diagram-section-title">
+        <div className="split lesson-split">
+          <div>
+            <h2 id="longitude-diagram-section-title">Longitude: using the UTC time of solar noon</h2>
+            <p>
+              This polar-view SVG connects the UTC time of local solar noon to the observer’s longitude.
+              It shows Greenwich, the observer meridian, the longitude angle, sunlight, and the rule that
+              Earth turns 15° per hour.
+            </p>
+          </div>
+          <LongitudeDiagram
+            longitudeDeg={kinglakeResult.longitudeDeg}
+            utcMinutesAfterMidnight={kinglakeResult.utcMinutesAfterMidnight}
+            equationOfTimeMinutes={kinglakeResult.equationOfTimeMinutes}
           />
         </div>
       </section>

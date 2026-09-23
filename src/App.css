@@ -174,7 +174,12 @@ p:last-child {
   margin: 0;
 }
 
-.latitude-diagram {
+.longitude-diagram-block {
+  margin: 0;
+}
+
+.latitude-diagram,
+.longitude-diagram {
   display: block;
   width: 100%;
   height: auto;
@@ -187,6 +192,16 @@ p:last-child {
   fill: var(--colour-earth-water);
   stroke: var(--colour-primary);
   stroke-width: 2;
+}
+
+.longitude-earth {
+  fill: var(--colour-earth-water);
+  stroke: var(--colour-primary);
+  stroke-width: 2;
+}
+
+.longitude-center {
+  fill: var(--colour-text-muted);
 }
 
 .diagram-equator,
@@ -206,6 +221,22 @@ p:last-child {
 .diagram-sunlight {
   stroke: var(--colour-sun);
   stroke-width: 3;
+}
+
+.longitude-sunlight {
+  stroke: var(--colour-sun);
+  stroke-width: 3;
+  stroke-dasharray: 6 4;
+}
+
+.prime-meridian {
+  stroke: var(--colour-text-muted);
+  stroke-width: 2;
+}
+
+.observer-meridian {
+  stroke: var(--colour-longitude);
+  stroke-width: 2.6;
 }
 
 .diagram-declination {
@@ -236,6 +267,13 @@ p:last-child {
   stroke-dasharray: 3 3;
 }
 
+.longitude-arc {
+  fill: none;
+  stroke: var(--colour-longitude);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
 .diagram-observer {
   fill: var(--colour-longitude);
   stroke: #fff;
@@ -248,7 +286,8 @@ p:last-child {
   stroke-width: 2;
 }
 
-.latitude-diagram text {
+.latitude-diagram text,
+.longitude-diagram text {
   fill: var(--colour-text);
   font-size: 11px;
 }

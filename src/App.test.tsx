@@ -49,4 +49,11 @@ describe('App progress page', () => {
     expect(screen.getByRole('heading', { name: /latitude: using the sun’s altitude/i })).toBeInTheDocument();
     expect(screen.getByRole('img', { name: /latitude diagram/i })).toBeInTheDocument();
   });
+
+  it('shows the first schematic longitude diagram slice', () => {
+    render(<App />);
+
+    expect(screen.getByRole('heading', { name: /longitude: using the utc time of solar noon/i })).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: /longitude diagram/i })).toBeInTheDocument();
+  });
 });
