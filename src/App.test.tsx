@@ -15,8 +15,8 @@ describe('App progress page', () => {
       screen.getByRole('heading', { name: /find a location from a solar-noon observation/i })
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/educational estimate/i)
-    ).toBeInTheDocument();
+      screen.getAllByText(/educational estimate/i).length
+    ).toBeGreaterThan(0);
   });
 
   it('shows the planned orthographic earth context without replacing the schematic diagrams', () => {
@@ -201,5 +201,16 @@ describe('App progress page', () => {
       expect.stringContaining('?date=2026-09-22&time=02%3A12&alt=50&dir=north')
     );
     expect(screen.getByText(/share link copied/i)).toBeInTheDocument();
+  });
+
+  it('shows glossary terms and method assumptions', () => {
+    render(<App />);
+
+    expect(screen.getByRole('heading', { name: /glossary and assumptions/i })).toBeInTheDocument();
+    expect(screen.getAllByText(/solar altitude/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/zenith distance/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/equation of time/i).length).toBeGreaterThan(0);
+    expect(screen.getByText(/the recorded time is local apparent solar noon/i)).toBeInTheDocument();
+    expect(screen.getByText(/the altitude is the corrected altitude of the Sun’s centre/i)).toBeInTheDocument();
   });
 });

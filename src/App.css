@@ -442,6 +442,75 @@ p:last-child {
   margin-bottom: 18px;
 }
 
+.glossary-panel {
+  margin-bottom: 18px;
+}
+
+.glossary-heading {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.4fr) minmax(0, 0.6fr);
+  gap: 16px 24px;
+  align-items: end;
+}
+
+.glossary-heading .eyebrow,
+.glossary-heading h2 {
+  grid-column: 1;
+}
+
+.glossary-heading p:last-child {
+  grid-column: 2;
+  color: var(--colour-text-muted);
+  font-size: 0.94rem;
+}
+
+.glossary-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.52fr);
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.glossary-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+.glossary-list div,
+.assumptions-card {
+  padding: 14px;
+  border-radius: 16px;
+  background: var(--colour-surface-subtle);
+}
+
+.glossary-list dt {
+  color: var(--colour-text);
+  font-weight: 800;
+}
+
+.glossary-list dd {
+  margin: 6px 0 0;
+  color: var(--colour-text-muted);
+  font-size: 0.88rem;
+  line-height: 1.42;
+}
+
+.assumptions-card h3 {
+  margin-bottom: 10px;
+}
+
+.assumptions-card ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--colour-text-muted);
+  font-size: 0.9rem;
+  line-height: 1.42;
+}
+
 .lesson-card {
   display: grid;
   gap: 16px;
@@ -698,13 +767,19 @@ p:last-child {
   }
 
   .trace-heading,
-  .trace-list {
+  .trace-list,
+  .glossary-heading,
+  .glossary-layout,
+  .glossary-list {
     grid-template-columns: 1fr;
   }
 
   .trace-heading .eyebrow,
   .trace-heading h2,
-  .trace-heading p:last-child {
+  .trace-heading p:last-child,
+  .glossary-heading .eyebrow,
+  .glossary-heading h2,
+  .glossary-heading p:last-child {
     grid-column: auto;
   }
 }

@@ -334,6 +334,55 @@ export default function App() {
         </article>
       </section>
 
+      <section className="panel glossary-panel" aria-labelledby="glossary-title">
+        <div className="glossary-heading">
+          <p className="eyebrow">Reference</p>
+          <h2 id="glossary-title">Glossary and assumptions</h2>
+          <p>
+            These are the core terms and limits behind the calculator. The result is an educational
+            estimate, not a certified navigation fix.
+          </p>
+        </div>
+        <div className="glossary-layout">
+          <dl className="glossary-list">
+            <div>
+              <dt>Solar altitude</dt>
+              <dd>Angle of the Sun above the true horizon.</dd>
+            </div>
+            <div>
+              <dt>True horizon</dt>
+              <dd>Plane perpendicular to the observer’s local vertical.</dd>
+            </div>
+            <div>
+              <dt>Zenith distance</dt>
+              <dd>Angle between the Sun and the point directly overhead; z = 90° − altitude.</dd>
+            </div>
+            <div>
+              <dt>Solar declination</dt>
+              <dd>The Sun’s angular position north or south of the celestial equator.</dd>
+            </div>
+            <div>
+              <dt>Subsolar point</dt>
+              <dd>Point on Earth where the Sun is directly overhead.</dd>
+            </div>
+            <div>
+              <dt>Equation of time</dt>
+              <dd>Difference between apparent solar time and uniform mean solar time.</dd>
+            </div>
+          </dl>
+          <div className="assumptions-card">
+            <h3>Method assumptions</h3>
+            <ul>
+              <li>The recorded time is local apparent solar noon.</li>
+              <li>The timestamp is UTC.</li>
+              <li>The altitude is the corrected altitude of the Sun’s centre above the true horizon.</li>
+              <li>The stated north/south direction is correct.</li>
+              <li>The result is educational rather than certified for navigation.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
       <section className="support-grid" aria-label="Supporting information">
         <section className="panel compact-panel" aria-labelledby="earth-context-title">
           <div>
