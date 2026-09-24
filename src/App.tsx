@@ -1,6 +1,7 @@
 import './App.css';
 import { useState, type FormEvent } from 'react';
 import { calculateSolarNoonLocation } from './domain/solarNoonLocation';
+import { generateSolarNoonObservationFromLocation } from './domain/locationObservation';
 import type { SolarNoonObservation } from './domain/observation';
 import { LatitudeDiagram } from './diagrams/LatitudeDiagram';
 import { LongitudeDiagram } from './diagrams/LongitudeDiagram';
@@ -61,6 +62,11 @@ export default function App() {
   const [directionInput, setDirectionInput] = useState<SolarNoonObservation['meridianDirection']>(() => observation.meridianDirection);
   const [coordinateFormat, setCoordinateFormat] = useState<CoordinateFormat>('decimal');
   const [formError, setFormError] = useState<string | null>(null);
+  const [knownLocationDateInput, setKnownLocationDateInput] = useState(() => observation.timestampUtc.slice(0, 10));
+  const [knownLatitudeInput, setKnownLatitudeInput] = useState('-37.4451');
+  const [knownLongitudeInput, setKnownLongitudeInput] = useState('145.2185');
+  const [knownLocationError, setKnownLocationError] = useState<string | null>(null);
+  const [generatedObservationMessage, setGeneratedObservationMessage] = useState<string | null>(null);
   const [shareStatus, setShareStatus] = useState<string | null>(null);
   const ephemeris = ephemerisProvider.at(observation.timestampUtc);
   const result = calculateSolarNoonLocation(observation, ephemeris);
@@ -100,6 +106,48 @@ export default function App() {
     }
 
     setShareStatus('Share link ready to copy from your browser address bar.');
+  }
+
+  function handleKnownLocationSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const latitudeDeg = Number(knownLatitudeInput);
+    const longitudeDeg = Number(knownLongitudeInput);
+
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(knownLocationDateInput)) {
+      setKnownLocationError('Choose a valid UTC date for the known location.');
+      return;
+    }
+
+    if (!Number.isFinite(latitudeDeg) || latitudeDeg < -90 || latitudeDeg > 90) {
+      setKnownLocationError('Known latitude must be between −90° and +90°.');
+      return;
+    }
+
+    if (!Number.isFinite(longitudeDeg) || longitudeDeg < -180 || longitudeDeg > 180) {
+      setKnownLocationError('Known longitude must be between −180° and +180°.');
+      return;
+    }
+
+    const generatedObservation = generateSolarNoonObservationFromLocation({
+      dateUtc: knownLocationDateInput,
+      latitudeDeg,
+      longitudeDeg,
+      ephemerisProvider
+    });
+
+    setKnownLocationError(null);
+    setGeneratedObservationMessage('Generated values are calculated for the known location and date, not measured in the field.');
+    applyObservation(generatedObservation);
+  }
+
+  function applyObservation(nextObservation: SolarNoonObservation) {
+    setObservation(nextObservation);
+    setDateInput(nextObservation.timestampUtc.slice(0, 10));
+    setTimeInput(nextObservation.timestampUtc.slice(11, 16));
+    setAltitudeInput(String(nextObservation.solarAltitudeDeg));
+    setDirectionInput(nextObservation.meridianDirection);
+    window.history.replaceState({}, '', buildObservationQuery(nextObservation));
+    setShareStatus(null);
   }
 
   return (
@@ -202,6 +250,49 @@ export default function App() {
               </label>
             </fieldset>
             <button type="submit">Calculate location</button>
+          </form>
+          <form className="known-location-form" noValidate onSubmit={handleKnownLocationSubmit}>
+            <div className="known-location-heading">
+              <p className="eyebrow">Reverse example</p>
+              <h3>Generate an observation from a known location</h3>
+              <p>
+                If you know a place and date, generate the UTC solar-noon time, altitude, and north/south
+                direction that the observation form would need.
+              </p>
+            </div>
+            <label htmlFor="known-location-date-input">Known-location date (UTC)</label>
+            <input
+              id="known-location-date-input"
+              className="plain-input"
+              type="date"
+              value={knownLocationDateInput}
+              onChange={(event) => setKnownLocationDateInput(event.target.value)}
+            />
+            <label htmlFor="known-latitude-input">Known latitude</label>
+            <input
+              id="known-latitude-input"
+              className="plain-input"
+              type="number"
+              min="-90"
+              max="90"
+              step="0.0001"
+              value={knownLatitudeInput}
+              onChange={(event) => setKnownLatitudeInput(event.target.value)}
+            />
+            <label htmlFor="known-longitude-input">Known longitude</label>
+            <input
+              id="known-longitude-input"
+              className="plain-input"
+              type="number"
+              min="-180"
+              max="180"
+              step="0.0001"
+              value={knownLongitudeInput}
+              onChange={(event) => setKnownLongitudeInput(event.target.value)}
+            />
+            {knownLocationError ? <p className="form-message form-message-error">{knownLocationError}</p> : null}
+            <button type="submit">Generate observation</button>
+            {generatedObservationMessage ? <p className="generated-observation-message">{generatedObservationMessage}</p> : null}
           </form>
         </section>
 

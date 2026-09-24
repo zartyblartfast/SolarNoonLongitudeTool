@@ -277,6 +277,56 @@ p:last-child {
   background: var(--colour-primary-strong);
 }
 
+.known-location-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 14px;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--colour-border);
+}
+
+.known-location-heading,
+.known-location-form .form-message,
+.known-location-form button,
+.generated-observation-message {
+  grid-column: 1 / -1;
+}
+
+.known-location-heading p:last-child {
+  color: var(--colour-text-muted);
+  font-size: 0.9rem;
+}
+
+.known-location-form > label {
+  align-self: end;
+  color: var(--colour-text-muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.known-location-form button {
+  min-height: 42px;
+  border: 1px solid var(--colour-primary);
+  border-radius: 999px;
+  background: var(--colour-surface);
+  color: var(--colour-primary);
+  font: inherit;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.known-location-form button:hover {
+  background: var(--colour-primary-subtle);
+}
+
+.generated-observation-message {
+  margin: 0;
+  color: var(--colour-text-muted);
+  font-size: 0.84rem;
+  font-weight: 650;
+}
+
 .coordinate-display {
   margin: 14px 0 18px;
   color: var(--colour-text);
@@ -826,6 +876,7 @@ p:last-child {
   }
 
   .observation-form,
+  .known-location-form,
   .result-metrics,
   .direction-fieldset,
   .phase-list {

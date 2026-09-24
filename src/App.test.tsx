@@ -101,6 +101,28 @@ describe('App progress page', () => {
     expect(screen.getByText(/38\.15° N, 145\.22° E/i)).toBeInTheDocument();
   });
 
+  it('generates observation inputs from a known latitude, longitude, and date', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    expect(screen.getByRole('heading', { name: /generate an observation from a known location/i })).toBeInTheDocument();
+
+    const latitudeInput = screen.getByRole('spinbutton', { name: /known latitude/i });
+    const longitudeInput = screen.getByRole('spinbutton', { name: /known longitude/i });
+    await user.clear(latitudeInput);
+    await user.type(latitudeInput, '-37.4451');
+    await user.clear(longitudeInput);
+    await user.type(longitudeInput, '145.2185');
+
+    await user.click(screen.getByRole('button', { name: /generate observation/i }));
+
+    expect(screen.getByLabelText(/date of solar noon \(utc\)/i)).toHaveValue('2026-09-22');
+    expect(screen.getByLabelText(/time of solar noon \(utc\)/i)).toHaveValue('02:12');
+    expect(screen.getByRole('spinbutton', { name: /solar altitude at noon/i })).toHaveValue(52.2);
+    expect(screen.getByRole('radio', { name: /due north/i })).toBeChecked();
+    expect(screen.getByText(/generated values are calculated/i)).toBeInTheDocument();
+  });
+
   it('shows an altitude validation error and preserves the previous result', async () => {
     const user = userEvent.setup();
     render(<App />);
